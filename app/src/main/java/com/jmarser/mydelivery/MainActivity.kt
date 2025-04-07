@@ -4,11 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jmarser.mydelivery.ui.theme.MyDeliveryTheme
@@ -23,7 +27,6 @@ class MainActivity : ComponentActivity() {
             MyDeliveryTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -33,17 +36,40 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun Greeting(modifier: Modifier = Modifier) {
+    Column (
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Text(
+            text = "DisplayLarge",
+            style = MaterialTheme.typography.displayLarge
+        )
+        Text(
+            text = "HeadLineLarge",
+            style = MaterialTheme.typography.headlineLarge
+        )
+        Text(
+            text = "TitleLarge",
+            style = MaterialTheme.typography.titleLarge
+        )
+        Text(
+            text = "BodyLarge",
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = "LabelLarge",
+            style = MaterialTheme.typography.labelLarge
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MyDeliveryTheme {
-        Greeting("Android")
+        Greeting()
     }
 }

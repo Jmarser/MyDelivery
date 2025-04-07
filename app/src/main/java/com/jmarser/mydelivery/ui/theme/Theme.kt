@@ -1,6 +1,5 @@
 package com.jmarser.mydelivery.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -50,9 +49,11 @@ fun MyDeliveryTheme(
         else -> LightColorScheme
     }
 
+    val typography = dynamicTypography()
+
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = typography,
         content = content
     )
 }
