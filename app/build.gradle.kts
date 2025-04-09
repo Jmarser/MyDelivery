@@ -77,6 +77,9 @@ dependencies {
     // Material
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.material3.window.size.class1)
+
+    // SplashScreen
+    implementation(libs.core.splashscreen)
 }
 
 kapt {
