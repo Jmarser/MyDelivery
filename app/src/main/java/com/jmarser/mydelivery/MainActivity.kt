@@ -25,11 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.animation.addListener
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jmarser.mydelivery.ui.theme.MyDeliveryTheme
 import com.jmarser.mydelivery.ui.theme.MyDimens
-import com.jmarser.mydelivery.utilities.MyLog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
