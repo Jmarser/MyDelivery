@@ -36,7 +36,7 @@ fun dynamicTypography(): Typography{
     return Typography(
         displayLarge = TextStyle(
             fontFamily = Poppins,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Black,
             fontSize = when{
                 isTablet -> 59.sp
                 isLandscape -> 58.sp
@@ -81,7 +81,7 @@ fun dynamicTypography(): Typography{
         ),
         headlineLarge = TextStyle(
             fontFamily = Poppins,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Black,
             fontSize = when{
                 isTablet -> 34.sp
                 isLandscape -> 33.sp
@@ -126,7 +126,7 @@ fun dynamicTypography(): Typography{
         ),
         titleLarge = TextStyle(
             fontFamily = Poppins,
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.ExtraBold,
             fontSize = when{
                 isTablet -> 24.sp
                 isLandscape -> 23.sp

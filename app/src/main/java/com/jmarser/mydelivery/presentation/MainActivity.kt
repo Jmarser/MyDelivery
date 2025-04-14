@@ -1,4 +1,4 @@
-package com.jmarser.mydelivery
+package com.jmarser.mydelivery.presentation
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,6 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.jmarser.mydelivery.presentation.feature_auth.sign_in.SignInScreen
+import com.jmarser.mydelivery.presentation.feature_auth.sign_up.SignUpScreen
+import com.jmarser.mydelivery.presentation.feature_auth.welcome.WelcomeScreen
 import com.jmarser.mydelivery.ui.theme.MyDeliveryTheme
 import com.jmarser.mydelivery.ui.theme.MyDimens
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,9 +57,10 @@ class MainActivity : ComponentActivity() {
             ){
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
+                    SignInScreen()
+                    /*Greeting(
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    )*/
                 }
             }
 

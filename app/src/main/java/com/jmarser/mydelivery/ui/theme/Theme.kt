@@ -76,6 +76,7 @@ fun MyDeliveryTheme(
         MaterialTheme(
             colorScheme = colorScheme,
             typography = typography,
+            shapes = customShapes,
             content = content
         )
     }

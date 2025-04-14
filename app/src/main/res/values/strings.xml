@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">My Delivery</string>
+    <string name="skip">Saltar</string>
+    <string name="welcome">Bienvenido</string>
+    <string name="slogan">Tus comidas favoritas directamente a tu mesa.</string>
+    <string name="facebook">FACEBOOK</string>
+    <string name="google">GOOGLE</string>
+    <string name="sign_in_with">Registrarse con</string>
+    <string name="sign_in_email">Registrarse con email</string>
+    <string name="alread_have_account">¿Ya tienes cuenta?</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="sign_up_title">Registro</string>
+    <string name="name">Nombre usuario</string>
+    <string name="john_doe">John Doe</string>
+    <string name="placeholder_email">Usuario@email.com</string>
+    <string name="password">Contraseña</string>
+    <string name="repeat_password">Repita contraseña</string>
+    <string name="sign_Up">Registro</string>
+    <string name="have_account">¿Ya tienes cuenta?</string>
+    <string name="sign_in_title">Iniciar Sesión</string>
+    <string name="forgot_password">¿Has olvidado la contraseña?</string>
+    <string name="sign_in">Iniciar sesión</string>
+    <string name="dont_have_account">¿No tienes cuenta?</string>
 </resources>
