@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -80,6 +81,10 @@ dependencies {
 
     // SplashScreen
     implementation(libs.core.splashscreen)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 }
 
 kapt {

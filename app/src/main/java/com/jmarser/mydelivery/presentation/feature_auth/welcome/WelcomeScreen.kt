@@ -29,12 +29,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.jmarser.mydelivery.R
 import com.jmarser.mydelivery.presentation.components.GroupSocialButtons
 import com.jmarser.mydelivery.presentation.components.RowQuestionWithTextButton
 import com.jmarser.mydelivery.ui.theme.MyDimens
 import com.jmarser.mydelivery.ui.theme.Orange_enabled
 import com.jmarser.mydelivery.presentation.components.SpacerHeightMedium
+import com.jmarser.mydelivery.presentation.navigation.AppRoutes
 
 /**
  * Project: My Delivery
@@ -44,7 +47,10 @@ import com.jmarser.mydelivery.presentation.components.SpacerHeightMedium
  */
  
 @Composable
-fun WelcomeScreen(){
+fun WelcomeScreen(
+    onNavigateToSignIn: () -> Unit,
+    onNavigateToSignUp: () -> Unit
+){
 
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
 
@@ -143,7 +149,7 @@ fun WelcomeScreen(){
                     width = MyDimens.dimens.borderExtraSmall,
                     color = Color.White
                 ),
-                onClick = {}
+                onClick = onNavigateToSignUp
             ) {
                 Text(
                     text = stringResource(id = R.string.sign_in_email),
@@ -159,7 +165,9 @@ fun WelcomeScreen(){
                 textQuestion = R.string.alread_have_account,
                 textOption = R.string.login,
                 colorQuestion = Color.White,
-                onClickText = {}
+                onClickText = {
+                    onNavigateToSignIn()
+                }
             )
         }
     }
@@ -168,5 +176,8 @@ fun WelcomeScreen(){
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun WelcomeScreenPreview(){
-    WelcomeScreen()
+    WelcomeScreen(
+        onNavigateToSignIn = {},
+        onNavigateToSignUp = {}
+    )
 }

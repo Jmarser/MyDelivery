@@ -36,7 +36,9 @@ import com.jmarser.mydelivery.ui.theme.Orange_enabled
 
 @Composable
 fun SignInScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToSignUp: () -> Unit,
+    onNavigateToHome: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -103,8 +105,8 @@ fun SignInScreen(
             ButtonForm(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClickButtom = {},
-                enabled = false,
+                onClickButtom = {onNavigateToHome()},
+                enabled = true,
                 loading = false,
                 textButton = R.string.sign_in
             )
@@ -116,7 +118,7 @@ fun SignInScreen(
                     .fillMaxWidth(),
                 textQuestion = R.string.dont_have_account,
                 textOption = R.string.sign_Up,
-                onClickText = {}
+                onClickText = { onNavigateToSignUp() }
             )
 
             SpacerHeightMedium()
@@ -136,5 +138,9 @@ fun SignInScreen(
 @Preview(showSystemUi = true)
 @Composable
 fun SignInScreenPreview() {
-    SignInScreen(modifier = Modifier)
+    SignInScreen(
+        modifier = Modifier,
+        onNavigateToSignUp = {},
+        onNavigateToHome = {}
+    )
 }

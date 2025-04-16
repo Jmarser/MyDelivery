@@ -25,9 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.jmarser.mydelivery.presentation.feature_auth.sign_in.SignInScreen
 import com.jmarser.mydelivery.presentation.feature_auth.sign_up.SignUpScreen
 import com.jmarser.mydelivery.presentation.feature_auth.welcome.WelcomeScreen
+import com.jmarser.mydelivery.presentation.navigation.AppNavHost
+import com.jmarser.mydelivery.presentation.navigation.AppRoutes
 import com.jmarser.mydelivery.ui.theme.MyDeliveryTheme
 import com.jmarser.mydelivery.ui.theme.MyDimens
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,13 +60,10 @@ class MainActivity : ComponentActivity() {
             MyDeliveryTheme (
                 windowSize = windowSize.widthSizeClass
             ){
+                val navController = rememberNavController()
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SignInScreen()
-                    /*Greeting(
-                        modifier = Modifier.padding(innerPadding)
-                    )*/
-                }
+                AppNavHost(navController = navController)
+
             }
 
         }
