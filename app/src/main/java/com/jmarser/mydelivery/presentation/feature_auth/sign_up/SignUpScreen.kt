@@ -1,12 +1,10 @@
 package com.jmarser.mydelivery.presentation.feature_auth.sign_up
 
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,16 +14,20 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jmarser.mydelivery.R
 import com.jmarser.mydelivery.presentation.components.AppIcons
 import com.jmarser.mydelivery.presentation.components.ButtonForm
@@ -33,17 +35,39 @@ import com.jmarser.mydelivery.presentation.components.GroupSocialButtons
 import com.jmarser.mydelivery.presentation.components.PasswordInputField
 import com.jmarser.mydelivery.presentation.components.RowQuestionWithTextButton
 import com.jmarser.mydelivery.presentation.components.SpacerHeightMedium
-import com.jmarser.mydelivery.presentation.components.SpacerWidthNormal
 import com.jmarser.mydelivery.presentation.components.TextInputField
 import com.jmarser.mydelivery.ui.theme.MyDimens
-import com.jmarser.mydelivery.ui.theme.Orange_enabled
 
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
+    viewModel: SignUpViewModel = hiltViewModel(),
     onNavigateToSignIn: () -> Unit,
     onNavigateToHome: () -> Unit
 ) {
+
+    val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val formState by viewModel.formState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.effect.collect{effect ->
+            when(effect){
+                SignUpEffect.ClearForm -> viewModel.clearForm()
+                SignUpEffect.NavigateToHome -> onNavigateToHome()
+                is SignUpEffect.ShowErrorDialog -> TODO()
+                is SignUpEffect.ShowToast -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.clearForm()
+        }
+    }
 
     Box(
         modifier = modifier
@@ -74,44 +98,56 @@ fun SignUpScreen(
 
             TextInputField(
                 modifier = Modifier,
-                value = "",
+                value = formState.name,
                 title = R.string.name,
                 placeholder = R.string.john_doe,
-                onValueChange = {},
+                onValueChange = {
+                    viewModel.onEvent(SignUpEvent.SetName(it))
+                },
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
-                leadingIcon = AppIcons.ic_user
+                leadingIcon = AppIcons.ic_user,
+                errorMessage = formState.nameErrorMessage
             )
 
             TextInputField(
                 modifier = Modifier,
-                value = "",
+                value = formState.email,
                 title = R.string.name,
                 placeholder = R.string.placeholder_email,
-                onValueChange = {},
+                onValueChange = {
+                    viewModel.onEvent(SignUpEvent.SetEmail(it))
+                },
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
-                leadingIcon = AppIcons.ic_email
+                leadingIcon = AppIcons.ic_email,
+                errorMessage = formState.emailErrorMessage
             )
 
             PasswordInputField(
                 modifier = Modifier,
-                value = "",
+                value = formState.password,
                 title = R.string.password,
-                onValueChange = {},
+                onValueChange = {
+                    viewModel.onEvent(SignUpEvent.SetPassword(it))
+                },
                 iconShow = AppIcons.ic_eyeOpen,
                 iconHide = AppIcons.ic_eyeClosed,
                 leadingIcon = AppIcons.ic_password,
+                errorMessage = formState.passwordErrorMessage
             )
 
             PasswordInputField(
                 modifier = Modifier,
-                value = "",
+                value = formState.repeatPassword,
                 title = R.string.repeat_password,
-                onValueChange = {},
+                onValueChange = {
+                    viewModel.onEvent(SignUpEvent.SetRepeatPassword(it))
+                },
                 iconShow = AppIcons.ic_eyeOpen,
                 iconHide = AppIcons.ic_eyeClosed,
                 leadingIcon = AppIcons.ic_password,
+                errorMessage = formState.repeatPasswordErrorMessage
             )
 
             SpacerHeightMedium()
@@ -119,9 +155,11 @@ fun SignUpScreen(
             ButtonForm(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClickButtom = onNavigateToHome,
-                enabled = true,
-                loading = false,
+                onClickButtom = {
+                    viewModel.onEvent(SignUpEvent.SignUpButtonPressed)
+                },
+                enabled = formState.isSubmitButtonEnabled,
+                loading = uiState is SignUpUiState.Loading,
                 textButton = R.string.sign_Up
             )
 
