@@ -21,7 +21,9 @@
     <string name="forgot_password">¿Has olvidado la contraseña?</string>
     <string name="sign_in">Iniciar sesión</string>
     <string name="dont_have_account">¿No tienes cuenta?</string>
+    <string name="understood">Entendido</string>
 
+    <string name="error">Error</string>
     <string name="error_email">Email no válido</string>
     <string name="error_name">Nombre de usuario no válido</string>
     <string name="error_password">Contraseña no válida</string>
@@ -31,5 +33,33 @@
     <string name="error_number_required">Debe contener al menos un número</string>
     <string name="error_special_char_required">Debe contener al menos un caracter especial</string>
     <string name="error_min_length_required">Debe tener al menos 6 caracteres</string>
+
+    <!-- ERRORCODE STRINGS -->
+    <string name="user_unknowm">Usuario desconocido</string>
+    <string name="user_empty">No hay datos del usuario</string>
+    <string name="identification_error">Error de identificación</string>
+    <string name="network_error">Error de red</string>
+    <string name="unknown_error">Ha ocurrido un error desconocido</string>
+    <string name="serialization_error">Error en los datos</string>
+    <string name="news_empty">No hay noticias disponibles</string>
+    <string name="news_error">Error al cargar las noticias</string>
+    <string name="login_error">Error de login</string>
+    <string name="register_error">Error al realizar el registro</string>
+    <string name="user_already_exists">El usuario ya existe</string>
+    <string name="user_not_found">Usuario no encontrado</string>
+    <string name="user_blocked">El usuario no tiene acceso</string>
+    <string name="user_not_active">Usuario desactivado</string>
+    <string name="reset_password_error">Error al cambiar la contraseña</string>
+    <string name="user_registration_error">Error al realizar el registro del usuario</string>
+    <string name="signup_success">Registro completado</string>
+    <string name="technical_error">Ha ocurrido un error técnico. Por favor, intenta más tarde.</string>
+    <string name="server_not_responding">El servidor no responde en este momento. Intenta nuevamente más tarde.</string>
+    <string name="parse_error_user">Ha ocurrido un problema inesperado al procesar los datos.</string>
+    <string name="connection_timeout">La conexión ha tardado demasiado. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="no_internet_connection">No hay conexión a Internet. Verifica tu red.</string>
+    <string name="server_response_null">El servidor ha respondido, pero los datos están incompletos. Intenta nuevamente más tarde.</string>
+    <string name="error_unauthorized_or_forbidden">No tienes permiso para realizar esta acción. Verifica tu sesión o tus credenciales.</string>
+    <string name="error_resource_not_found">El recurso solicitado no está disponible o ha sido eliminado.</string>
+    <string name="error_server_error">Ha ocurrido un problema en el servidor. Inténtalo de nuevo más tarde.</string>
 
 </resources>

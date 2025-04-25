@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jmarser.mydelivery.R
 import com.jmarser.mydelivery.presentation.components.AppIcons
 import com.jmarser.mydelivery.presentation.components.ButtonForm
+import com.jmarser.mydelivery.presentation.components.CustomNotificationDialog
 import com.jmarser.mydelivery.presentation.components.GroupSocialButtons
 import com.jmarser.mydelivery.presentation.components.PasswordInputField
 import com.jmarser.mydelivery.presentation.components.RowQuestionWithTextButton
@@ -49,13 +50,26 @@ fun SignUpScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val formState by viewModel.formState.collectAsStateWithLifecycle()
+    val dialogState by viewModel.dialogState.collectAsStateWithLifecycle()
+
+    if (dialogState.isVisible){
+        CustomNotificationDialog(
+            textTitle = dialogState.title,
+            textMessage = dialogState.message,
+            onConfirm = {
+                viewModel.onEvent(SignUpEvent.DismissDialog)
+            },
+            onDismiss = {
+                viewModel.onEvent(SignUpEvent.DismissDialog)
+            }
+        )
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.effect.collect{effect ->
             when(effect){
                 SignUpEffect.ClearForm -> viewModel.clearForm()
                 SignUpEffect.NavigateToHome -> onNavigateToHome()
-                is SignUpEffect.ShowErrorDialog -> TODO()
                 is SignUpEffect.ShowToast -> {
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
                 }

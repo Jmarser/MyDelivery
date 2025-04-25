@@ -29,6 +29,7 @@ android {
                 "proguard-rules.pro"
             )
             buildConfigField("boolean", "LOG_ENABLED", "false")
+            buildConfigField("String", "BASE_URL", "\"https://apiRelease.com/\"")
         }
         debug {
             isMinifyEnabled = false
@@ -37,6 +38,7 @@ android {
                 "proguard-rules.pro"
             )
             buildConfigField("boolean", "LOG_ENABLED", "true")
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/\"")
         }
     }
     compileOptions {
@@ -92,6 +94,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.runtime.livedata)
+
+    // retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.retrofit2.kotlin.coroutines.adapter)
     
 }
 

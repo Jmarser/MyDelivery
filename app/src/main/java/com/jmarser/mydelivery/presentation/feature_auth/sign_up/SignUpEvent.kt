@@ -14,4 +14,5 @@ sealed interface SignUpEvent {
     data class SetPassword(val password: String): SignUpEvent
     data class SetRepeatPassword(val repeatPassword: String): SignUpEvent
     object SignUpButtonPressed: SignUpEvent
+    object DismissDialog: SignUpEvent
 }

@@ -1,0 +1,20 @@
+package com.jmarser.mydelivery.data.remote.network
+
+import com.jmarser.mydelivery.data.modelsDto.AuthResponse
+import com.jmarser.mydelivery.data.modelsDto.SignUpRequestDto
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.POST
+
+/**
+ * Project: My Delivery
+ * File: ApiService
+ * Author: Tu Jmarser <aenur32@gmail.com>
+ * Created: 24/04/2025
+ */
+
+interface ApiService {
+
+    @POST("auth/signup")
+    suspend fun signUp(@Body request: SignUpRequestDto): Response<AuthResponse>
+}
