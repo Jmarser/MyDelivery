@@ -1,5 +1,7 @@
 package com.jmarser.mydelivery.data.remote.repository
 
+import com.jmarser.mydelivery.data.modelsDto.AuthResponse
+import com.jmarser.mydelivery.data.modelsDto.SignInRequestDto
 import com.jmarser.mydelivery.data.modelsDto.SignUpRequestDto
 import com.jmarser.mydelivery.data.remote.network.ApiService
 import com.jmarser.mydelivery.data.remote.network.SafeApiCall
@@ -20,6 +22,10 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun tryToRegister(request: SignUpRequestDto) = safeApiCall {
         apiService.signUp(request)
+    }
+
+    override suspend fun tryToLogin(request: SignInRequestDto) = safeApiCall {
+        apiService.signIn(request)
     }
 
 

@@ -1,6 +1,7 @@
 package com.jmarser.mydelivery.domain.repository
 
 import com.jmarser.mydelivery.data.modelsDto.AuthResponse
+import com.jmarser.mydelivery.data.modelsDto.SignInRequestDto
 import com.jmarser.mydelivery.data.modelsDto.SignUpRequestDto
 import com.jmarser.mydelivery.data.remote.repository.Resource
 
@@ -14,4 +15,6 @@ import com.jmarser.mydelivery.data.remote.repository.Resource
 interface AuthRepository {
 
     suspend fun tryToRegister(request: SignUpRequestDto): Resource<AuthResponse>
+
+    suspend fun tryToLogin(request: SignInRequestDto): Resource<AuthResponse>
 }

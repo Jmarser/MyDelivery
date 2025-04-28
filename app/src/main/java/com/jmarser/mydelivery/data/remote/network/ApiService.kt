@@ -1,6 +1,7 @@
 package com.jmarser.mydelivery.data.remote.network
 
 import com.jmarser.mydelivery.data.modelsDto.AuthResponse
+import com.jmarser.mydelivery.data.modelsDto.SignInRequestDto
 import com.jmarser.mydelivery.data.modelsDto.SignUpRequestDto
 import retrofit2.Response
 import retrofit2.http.Body
@@ -17,4 +18,7 @@ interface ApiService {
 
     @POST("auth/signup")
     suspend fun signUp(@Body request: SignUpRequestDto): Response<AuthResponse>
+
+    @POST("auth/login")
+    suspend fun signIn(@Body request: SignInRequestDto): Response<AuthResponse>
 }

@@ -162,10 +162,12 @@ class SignUpViewModel @Inject constructor(
                             isVisible = true
                         )
                         _effect.emit(SignUpEffect.ClearForm)
+                        _uiState.value = SignUpUiState.Idle
                     }
                     else -> {
                         _effect.emit(SignUpEffect.ShowToast(context.getString(ErrorCodeState.UNKNOWN_ERROR.resourceId)))
                         _effect.emit(SignUpEffect.ClearForm)
+                        _uiState.value = SignUpUiState.Idle
                     }
                 }
 
