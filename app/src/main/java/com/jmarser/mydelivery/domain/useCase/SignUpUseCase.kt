@@ -8,6 +8,7 @@ import com.jmarser.mydelivery.data.mappers.toDto
 import com.jmarser.mydelivery.data.remote.repository.Resource
 import com.jmarser.mydelivery.domain.modelsDomain.SignUpRequest
 import com.jmarser.mydelivery.domain.repository.AuthRepository
+import com.jmarser.mydelivery.domain.repository.SharedRepository
 import com.jmarser.mydelivery.presentation.feature_auth.sign_up.SignUpUiState
 import javax.inject.Inject
 
@@ -20,7 +21,8 @@ import javax.inject.Inject
  
 class SignUpUseCase @Inject constructor(
     private val validationForm: ValidationForm,
-    private val authRepo: AuthRepository
+    private val authRepo: AuthRepository,
+    private val sharedRepo: SharedRepository
 ) {
 
     fun validateFieldNotEmpty(texto: String): Boolean = validationForm.validateFiledNotEmpty(texto)
@@ -40,7 +42,13 @@ class SignUpUseCase @Inject constructor(
         )
 
         when(val response = authRepo.tryToRegister(request.toDto())){
-            is Resource.Success -> return SignUpUiState.Success(data = response.value.toDomain())
+            is Resource.Success -> {
+
+                sharedRepo.saveAuthToken(response.value.token)
+                sharedRepo.saveUserCredentials(email, password)
+
+                return SignUpUiState.Success(data = response.value.toDomain())
+            }
             is Resource.Failure -> return SignUpUiState.Failure(isNetwork = response.isNetworkError, errorCodeState = response.errorCodeState)
             else -> return SignUpUiState.Failure(errorCodeState = ErrorCodeState.UNKNOWN_ERROR)
         }

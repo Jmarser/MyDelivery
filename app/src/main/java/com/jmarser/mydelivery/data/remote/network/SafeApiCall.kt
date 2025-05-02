@@ -38,7 +38,7 @@ interface SafeApiCall {
                     val errorMessage = ApiError.parserHttpError(response)
                     MyLog.e(
                         TAG,
-                        "Fallo en la llamada a la API con error HTTP: "
+                        "Fallo en la llamada a la API con error HTTP: $errorMessage"
                     )
                     val mappedError = response.code().toErrorCodeState()
 
@@ -54,7 +54,7 @@ interface SafeApiCall {
                         val errorMessage = ApiError.parserHttpError(throwable.response()!!)
                         MyLog.e(
                             TAG,
-                            "Fallo en la llamada a la Api con HttpException: "
+                            "Fallo en la llamada a la Api con HttpException: $errorMessage"
                         )
                         val response = throwable.response()
                         val errorCodeState = response?.code()?.toErrorCodeState() ?: ErrorCodeState.UNKNOWN_ERROR

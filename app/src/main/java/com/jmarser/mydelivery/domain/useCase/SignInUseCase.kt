@@ -9,6 +9,7 @@ import com.jmarser.mydelivery.data.modelsDto.AuthResponse
 import com.jmarser.mydelivery.data.remote.repository.Resource
 import com.jmarser.mydelivery.domain.modelsDomain.SignInResquest
 import com.jmarser.mydelivery.domain.repository.AuthRepository
+import com.jmarser.mydelivery.domain.repository.SharedRepository
 import com.jmarser.mydelivery.presentation.feature_auth.sign_in.SignInUiState
 import javax.inject.Inject
 
@@ -21,12 +22,24 @@ import javax.inject.Inject
 
 class SignInUseCase @Inject constructor(
     private val validationForm: ValidationForm,
-    private val authRepo: AuthRepository
+    private val authRepo: AuthRepository,
+    private val sharedRepo: SharedRepository
 ) {
 
     fun validateEmail(email: String): Boolean = validationForm.validateEmail(email)
 
     fun validatePassword(password: String): PasswordValidationResult = validationForm.validatePasswordDetail(password)
+
+    fun getCredentials(): Pair<String, String>?{
+        val email = sharedRepo.getUserEmail()
+        val password = sharedRepo.getUserPassword()
+
+        return if (email.isNotEmpty() && password.isNotEmpty()){
+            email to password
+        }else {
+            null
+        }
+    }
 
     suspend fun tryToLogin(email: String, password: String): SignInUiState{
         val request = SignInResquest(
@@ -35,7 +48,13 @@ class SignInUseCase @Inject constructor(
         )
 
         when(val response = authRepo.tryToLogin(request.toDto())){
-            is Resource.Success -> return SignInUiState.Success(data = response.value.toDomain())
+            is Resource.Success -> {
+
+                sharedRepo.saveAuthToken(response.value.token)
+                sharedRepo.saveUserCredentials(email, password)
+
+                return SignInUiState.Success(data = response.value.toDomain())
+            }
             is Resource.Failure -> {
                 return SignInUiState.Failure(isNetwork = response.isNetworkError, errorCodeState = response.errorCodeState)
             }

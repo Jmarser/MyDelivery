@@ -61,6 +61,9 @@ fun AppNavHost(
                 },
                 onNavigateToSignUp = {
                     navController.navigateToSignUp()
+                },
+                onNavigateToHome = {
+                    navController.navigateToHome()
                 }
             )
         }

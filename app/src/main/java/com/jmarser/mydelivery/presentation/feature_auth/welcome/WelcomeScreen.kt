@@ -1,5 +1,6 @@
 package com.jmarser.mydelivery.presentation.feature_auth.welcome
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,15 +21,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jmarser.mydelivery.R
@@ -48,9 +52,25 @@ import com.jmarser.mydelivery.presentation.navigation.AppRoutes
  
 @Composable
 fun WelcomeScreen(
+    viewModel: WelcomeViewModel = hiltViewModel(),
     onNavigateToSignIn: () -> Unit,
-    onNavigateToSignUp: () -> Unit
+    onNavigateToSignUp: () -> Unit,
+    onNavigateToHome: () -> Unit
 ){
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = true) {
+        viewModel.effect.collect{effect ->
+            when(effect){
+                WelcomeEffect.NavigateToHome -> onNavigateToHome()
+                WelcomeEffect.NavigateToSignIn -> onNavigateToSignIn()
+                is WelcomeEffect.ShowToast -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
 
@@ -166,7 +186,7 @@ fun WelcomeScreen(
                 textOption = R.string.login,
                 colorQuestion = Color.White,
                 onClickText = {
-                    onNavigateToSignIn()
+                    viewModel.onEvent(WelcomeEvent.SignInButtonPressed)
                 }
             )
         }
@@ -178,6 +198,7 @@ fun WelcomeScreen(
 fun WelcomeScreenPreview(){
     WelcomeScreen(
         onNavigateToSignIn = {},
-        onNavigateToSignUp = {}
+        onNavigateToSignUp = {},
+        onNavigateToHome = {}
     )
 }

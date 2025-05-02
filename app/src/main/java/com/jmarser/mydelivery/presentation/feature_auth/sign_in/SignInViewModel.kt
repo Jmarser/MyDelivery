@@ -30,7 +30,7 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val useCase: SignInUseCase
-): ViewModel(){
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SignInUiState>(SignInUiState.Idle)
     val uiState: StateFlow<SignInUiState> = _uiState.asStateFlow()
@@ -44,8 +44,12 @@ class SignInViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<SignInEffect>()
     val effect: SharedFlow<SignInEffect> = _effect.asSharedFlow()
 
-    fun onEvent(event: SignInEvent){
-        when(event){
+    init {
+        validateCredentials()
+    }
+
+    fun onEvent(event: SignInEvent) {
+        when (event) {
             is SignInEvent.SetEmail -> setEmail(event.email)
             is SignInEvent.SetPassword -> setPassword(event.password)
             SignInEvent.SignInButtonPressed -> tryToLogin()
@@ -53,7 +57,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private fun setEmail(value: String){
+    private fun setEmail(value: String) {
         val isValid = useCase.validateEmail(value)
         _formState.update {
             it.copy(
@@ -66,7 +70,7 @@ class SignInViewModel @Inject constructor(
         validateSubmit()
     }
 
-    private fun setPassword(value: String){
+    private fun setPassword(value: String) {
         val result = useCase.validatePassword(value)
 
         _formState.update {
@@ -80,17 +84,17 @@ class SignInViewModel @Inject constructor(
         validateSubmit()
     }
 
-    private fun validateSubmit(){
+    private fun validateSubmit() {
         _formState.update {
             val areAllValidationsNotNull = listOf(
                 it.isEmailValid,
                 it.isPasswordValid
-            ).none{validation -> validation == null}
+            ).none { validation -> validation == null }
 
             val areAllValidationsTrue = listOf(
                 it.isEmailValid,
                 it.isPasswordValid
-            ).all{validation -> validation == true}
+            ).all { validation -> validation == true }
 
             it.copy(
                 isSubmitButtonEnabled = areAllValidationsNotNull && areAllValidationsTrue
@@ -98,40 +102,53 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun clearForm(){
+    fun clearForm() {
         _formState.value = SignInFormState()
     }
 
-    private fun dismissDialog(){
+    private fun dismissDialog() {
         _dialogState.update { it.copy(isVisible = false) }
     }
 
-    private fun tryToLogin(){
+    private fun validateCredentials() {
+        useCase.getCredentials()?.let { (email, password) ->
+            login(email, password, false)
+        }
+    }
+
+    private fun tryToLogin() {
         _uiState.value = SignInUiState.Loading
         val state = _formState.value
 
-        if (state.isSubmitButtonEnabled){
-            viewModelScope.launch {
-                val result = useCase.tryToLogin(state.email, state.password)
+        if (state.isSubmitButtonEnabled) {
+            login(state.email, state.password, true)
+        }
+    }
 
-                when(result){
-                    is SignInUiState.Success -> {
-                        _effect.emit(SignInEffect.ShowToast(context.getString(R.string.signin_success)))
-                        _effect.emit(SignInEffect.NavigateToHome)
-                    }
-                    is SignInUiState.Failure -> {
-                        _dialogState.value = SignInDialogState(
-                            title = context.getString(R.string.error),
-                            message = context.getString(result.errorCodeState.resourceId),
-                            isVisible = true
-                        )
-                        _effect.emit(SignInEffect.ClearForm)
-                        _uiState.value = SignInUiState.Idle
-                    }
-                    else -> {
-                        _effect.emit(SignInEffect.ShowToast(context.getString(ErrorCodeState.UNKNOWN_ERROR.resourceId)))
-                        _uiState.value = SignInUiState.Idle
-                    }
+    private fun login(email: String, password: String, clearForm: Boolean) {
+        viewModelScope.launch {
+            val result = useCase.tryToLogin(email, password)
+
+            when (result) {
+                is SignInUiState.Success -> {
+                    _effect.emit(SignInEffect.ShowToast(context.getString(R.string.signin_success)))
+                    _effect.emit(SignInEffect.NavigateToHome)
+                }
+
+                is SignInUiState.Failure -> {
+                    _dialogState.value = SignInDialogState(
+                        title = context.getString(R.string.error),
+                        message = context.getString(result.errorCodeState.resourceId),
+                        isVisible = true
+                    )
+                    if (clearForm) _effect.emit(SignInEffect.ClearForm)
+                    _uiState.value = SignInUiState.Idle
+                }
+
+                else -> {
+                    if (clearForm) _effect.emit(SignInEffect.ClearForm)
+                    _effect.emit(SignInEffect.ShowToast(context.getString(ErrorCodeState.UNKNOWN_ERROR.resourceId)))
+                    _uiState.value = SignInUiState.Idle
                 }
             }
         }

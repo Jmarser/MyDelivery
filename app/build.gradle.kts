@@ -100,7 +100,10 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
     implementation(libs.retrofit2.kotlin.coroutines.adapter)
-    
+
+    // Crypto sharedpreferences
+    implementation(libs.androidx.security.crypto)
+
 }
 
 kapt {
