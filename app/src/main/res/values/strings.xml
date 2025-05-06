@@ -62,5 +62,6 @@
     <string name="error_unauthorized_or_forbidden">No tienes permiso para realizar esta acción. Verifica tu sesión o tus credenciales.</string>
     <string name="error_resource_not_found">El recurso solicitado no está disponible o ha sido eliminado.</string>
     <string name="error_server_error">Ha ocurrido un problema en el servidor. Inténtalo de nuevo más tarde.</string>
+    <string name="title_home">¿Qué quieres comer hoy?</string>
 
 </resources>

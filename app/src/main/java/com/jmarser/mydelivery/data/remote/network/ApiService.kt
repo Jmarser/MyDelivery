@@ -1,10 +1,12 @@
 package com.jmarser.mydelivery.data.remote.network
 
 import com.jmarser.mydelivery.data.modelsDto.AuthResponse
+import com.jmarser.mydelivery.data.modelsDto.CategoryResponse
 import com.jmarser.mydelivery.data.modelsDto.SignInRequestDto
 import com.jmarser.mydelivery.data.modelsDto.SignUpRequestDto
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 /**
@@ -21,4 +23,7 @@ interface ApiService {
 
     @POST("auth/login")
     suspend fun signIn(@Body request: SignInRequestDto): Response<AuthResponse>
+
+    @GET("categories")
+    suspend fun getAllCategories(): Response<CategoryResponse>
 }

@@ -104,6 +104,10 @@ dependencies {
     // Crypto sharedpreferences
     implementation(libs.androidx.security.crypto)
 
+    // coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
 }
 
 kapt {

@@ -1,0 +1,15 @@
+package com.jmarser.mydelivery.presentation.feature_home
+
+import com.jmarser.mydelivery.domain.modelsDomain.CategoryDm
+
+/**
+ * Project: My Delivery
+ * File: HomeEvent
+ * Author: Tu Jmarser <aenur32@gmail.com>
+ * Created: 06/05/2025
+ */
+
+sealed interface HomeEvent {
+
+    data class OnCategorySelected(val category: CategoryDm): HomeEvent
+}

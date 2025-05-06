@@ -1,0 +1,90 @@
+package com.jmarser.mydelivery.presentation.feature_home
+
+
+import android.widget.Toast
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jmarser.mydelivery.R
+import com.jmarser.mydelivery.ui.theme.MyDimens
+import kotlinx.coroutines.flow.collect
+
+@Composable
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+
+    val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val categoriesUiState by viewModel.categoryUiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect{effect ->
+            when(effect){
+                is HomeEffect.CategorySelected -> {
+                    Toast.makeText(context, "Seleccionastes: ${effect.category.name}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    Column (
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = MyDimens.dimens.paddingNormal, vertical = MyDimens.dimens.paddingMedium)
+    ){
+        Text(
+            modifier = Modifier
+                .fillMaxWidth(),
+            text = stringResource(R.string.title_home),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.ExtraBold
+        )
+
+        when(val state = categoriesUiState){
+            CategoriesUiState.Loading -> CircularProgressIndicator()
+            CategoriesUiState.Empty -> {
+                Text(text = "No hay datos para mostrar")
+            }
+            is CategoriesUiState.Failure -> {
+                Text(text = stringResource(state.errorCodeState.resourceId))
+            }
+            is CategoriesUiState.Success -> {
+                val categories = state.data?.data.orEmpty()
+                if (categories.isNotEmpty()){
+                    CategoriesList(
+                        categories = categories,
+                        selectedCategory = uiState.selectedCategory,
+                        onCategorySelected = {
+                            viewModel.onEvent(HomeEvent.OnCategorySelected(it))
+                        }
+                    )
+                }else{
+                    Text(text = "Sin datos")
+                }
+            }
+            else ->{}
+        }
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen(modifier = Modifier)
+}

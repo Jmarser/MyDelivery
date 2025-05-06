@@ -12,6 +12,7 @@ import com.jmarser.mydelivery.presentation.Greeting
 import com.jmarser.mydelivery.presentation.feature_auth.sign_in.SignInScreen
 import com.jmarser.mydelivery.presentation.feature_auth.sign_up.SignUpScreen
 import com.jmarser.mydelivery.presentation.feature_auth.welcome.WelcomeScreen
+import com.jmarser.mydelivery.presentation.feature_home.HomeScreen
 
 /**
  * Project: My Delivery
@@ -91,7 +92,7 @@ fun AppNavHost(
         }
 
         composable<AppRoutes.Home> {
-            Greeting()
+            HomeScreen()
         }
     }
 }
