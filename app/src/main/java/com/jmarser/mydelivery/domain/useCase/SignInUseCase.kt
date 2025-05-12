@@ -21,43 +21,28 @@ import javax.inject.Inject
  */
 
 class SignInUseCase @Inject constructor(
-    private val validationForm: ValidationForm,
-    private val authRepo: AuthRepository,
-    private val sharedRepo: SharedRepository
+    private val authRepo: AuthRepository
 ) {
 
-    fun validateEmail(email: String): Boolean = validationForm.validateEmail(email)
 
-    fun validatePassword(password: String): PasswordValidationResult = validationForm.validatePasswordDetail(password)
-
-    fun getCredentials(): Pair<String, String>?{
-        val email = sharedRepo.getUserEmail()
-        val password = sharedRepo.getUserPassword()
-
-        return if (email.isNotEmpty() && password.isNotEmpty()){
-            email to password
-        }else {
-            null
-        }
-    }
-
-    suspend fun tryToLogin(email: String, password: String): SignInUiState{
+    suspend fun tryToLogin(email: String, password: String): SignInUiState {
         val request = SignInResquest(
             email = email,
             password = password
         )
 
-        when(val response = authRepo.tryToLogin(request.toDto())){
+        when (val response = authRepo.tryToLogin(request.toDto())) {
             is Resource.Success -> {
-
-                sharedRepo.saveAuthToken(response.value.token)
-                sharedRepo.saveUserCredentials(email, password)
-
                 return SignInUiState.Success(data = response.value.toDomain())
             }
+
             is Resource.Failure -> {
-                return SignInUiState.Failure(isNetwork = response.isNetworkError, errorCodeState = response.errorCodeState)
+                return SignInUiState.Failure(
+                    isNetwork = response.isNetworkError,
+                    errorCodeState = response.errorCodeState
+                )
             }
+
             else -> return SignInUiState.Failure(errorCodeState = ErrorCodeState.UNKNOWN_ERROR)
         }
     }

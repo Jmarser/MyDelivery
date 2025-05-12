@@ -20,18 +20,8 @@ import javax.inject.Inject
  */
  
 class SignUpUseCase @Inject constructor(
-    private val validationForm: ValidationForm,
-    private val authRepo: AuthRepository,
-    private val sharedRepo: SharedRepository
+    private val authRepo: AuthRepository
 ) {
-
-    fun validateFieldNotEmpty(texto: String): Boolean = validationForm.validateFiledNotEmpty(texto)
-
-    fun validateEmail(email: String): Boolean = validationForm.validateEmail(email)
-
-    fun validatePassword(password: String): PasswordValidationResult = validationForm.validatePasswordDetail(password)
-
-    fun validatePasswordEquals(password: String, repeatPassword: String): Boolean = validationForm.validatePasswordsEquals(password, repeatPassword)
 
     suspend fun tryToRegister(name: String, email: String, password: String): SignUpUiState{
 
@@ -43,10 +33,6 @@ class SignUpUseCase @Inject constructor(
 
         when(val response = authRepo.tryToRegister(request.toDto())){
             is Resource.Success -> {
-
-                sharedRepo.saveAuthToken(response.value.token)
-                sharedRepo.saveUserCredentials(email, password)
-
                 return SignUpUiState.Success(data = response.value.toDomain())
             }
             is Resource.Failure -> return SignUpUiState.Failure(isNetwork = response.isNetworkError, errorCodeState = response.errorCodeState)

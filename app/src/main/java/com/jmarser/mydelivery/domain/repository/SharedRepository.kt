@@ -13,9 +13,13 @@ interface SharedRepository {
 
     fun saveUserCredentials(email: String, password: String)
 
+    fun saveCredentials(email: String, password: String, token: String)
+
     fun getUserEmail(): String
 
     fun getUserPassword(): String
 
     fun getAuthToken(): String
+
+    fun clearCredentials()
 }

@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jmarser.mydelivery.R
 import com.jmarser.mydelivery.core.ErrorCodeState
+import com.jmarser.mydelivery.domain.useCase.FormUseCase
+import com.jmarser.mydelivery.domain.useCase.SharedUseCase
 import com.jmarser.mydelivery.domain.useCase.SignUpUseCase
 import com.jmarser.mydelivery.utilities.MyLog
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +31,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val useCase: SignUpUseCase
+    private val useCase: SignUpUseCase,
+    private val formUseCase: FormUseCase,
+    private val sharedUseCase: SharedUseCase
 ): ViewModel(){
 
     private val _uiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Idle)
@@ -56,7 +60,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun setName(name: String){
-        val isValid = useCase.validateFieldNotEmpty(name)
+        val isValid = formUseCase.validateFieldNotEmpty(name)
         _formState.update {
             it.copy(
                 name = name,
@@ -69,7 +73,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun setEmail(email: String){
-        val isValid = useCase.validateEmail(email)
+        val isValid = formUseCase.validateEmail(email)
         _formState.update {
             it.copy(
                 email = email,
@@ -82,7 +86,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun setPassword(password: String){
-        val result = useCase.validatePassword(password)
+        val result = formUseCase.validatePassword(password)
         _formState.update {
             it.copy(
                 password = password,
@@ -109,7 +113,7 @@ class SignUpViewModel @Inject constructor(
     private fun validatePasswordMatch(){
 
         _formState.update {
-            val isValid = useCase.validatePasswordEquals(it.password, it.repeatPassword)
+            val isValid = formUseCase.validatePasswordEquals(it.password, it.repeatPassword)
             it.copy(
                 isRepeatPasswordValid = isValid,
                 repeatPasswordErrorMessage = if (isValid) null else context.getString(R.string.error_password_not_match)
@@ -152,6 +156,13 @@ class SignUpViewModel @Inject constructor(
 
                 when(result){
                     is SignUpUiState.Success -> {
+
+                        sharedUseCase.saveCredentials(
+                            email = state.email,
+                            password = state.password,
+                            token = result.data.token
+                        )
+
                         _effect.emit(SignUpEffect.ShowToast(context.getString(R.string.signup_success)))
                         _effect.emit(SignUpEffect.NavigateToHome)
                     }

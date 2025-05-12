@@ -24,6 +24,12 @@ class SharedRepositoryImpl @Inject constructor(
         prefs.save(Constants.PASSWORD_USER, password)
     }
 
+    override fun saveCredentials(email: String, password: String, token: String) {
+        prefs.save(Constants.EMAIL_USER, email)
+        prefs.save(Constants.PASSWORD_USER, password)
+        prefs.save(Constants.AUTH_TOKEN, token)
+    }
+
     override fun getUserEmail(): String {
         return prefs.get(Constants.EMAIL_USER, "")
     }
@@ -34,5 +40,11 @@ class SharedRepositoryImpl @Inject constructor(
 
     override fun getAuthToken(): String {
         return prefs.get(Constants.AUTH_TOKEN, "")
+    }
+
+    override fun clearCredentials() {
+        prefs.remove(Constants.EMAIL_USER)
+        prefs.remove(Constants.PASSWORD_USER)
+        prefs.remove(Constants.AUTH_TOKEN)
     }
 }

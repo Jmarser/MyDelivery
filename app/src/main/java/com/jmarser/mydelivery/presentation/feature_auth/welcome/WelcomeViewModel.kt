@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jmarser.mydelivery.R
+import com.jmarser.mydelivery.domain.useCase.SharedUseCase
 import com.jmarser.mydelivery.domain.useCase.SignInUseCase
 import com.jmarser.mydelivery.presentation.feature_auth.sign_in.SignInUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val useCase: SignInUseCase
+    private val useCase: SignInUseCase,
+    private val sharedUseCase: SharedUseCase,
 ): ViewModel(){
 
     private val _effect = MutableSharedFlow<WelcomeEffect>()
@@ -37,17 +39,23 @@ class WelcomeViewModel @Inject constructor(
     }
 
     private fun validateCredentials(){
-        useCase.getCredentials()?.let { (email, password) ->
+        sharedUseCase.getCredentials()?.let { (email, password) ->
             viewModelScope.launch {
                 if (email.isNotEmpty() && password.isNotEmpty()){
                     val result = useCase.tryToLogin(email, password)
 
                     when(result){
                         is SignInUiState.Success -> {
+
+                            sharedUseCase.saveAuthToken(token = result.data.token)
+
                             _effect.emit(WelcomeEffect.ShowToast(context.getString(R.string.signin_success)))
                             _effect.emit(WelcomeEffect.NavigateToHome)
                         }
-                        else -> _effect.emit(WelcomeEffect.NavigateToSignIn)
+                        else -> {
+                            sharedUseCase.clearCredentials()
+                            _effect.emit(WelcomeEffect.NavigateToSignIn)
+                        }
                     }
 
                 }else{

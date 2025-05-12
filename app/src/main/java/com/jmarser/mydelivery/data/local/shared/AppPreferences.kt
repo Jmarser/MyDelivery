@@ -56,6 +56,17 @@ class AppPreferences(
         }
     }
 
+    fun remove(key: String){
+        try {
+            with(sharedPreferences.edit()) {
+                remove(key)
+                apply()
+            }
+        } catch (e: SecurityException) {
+            MyLog.d("REMOVE_PREFERENCES", "Error: ${e.message} / ${e.localizedMessage}")
+        }
+    }
+
     fun clearAll() {
         try {
             with(sharedPreferences.edit()) {

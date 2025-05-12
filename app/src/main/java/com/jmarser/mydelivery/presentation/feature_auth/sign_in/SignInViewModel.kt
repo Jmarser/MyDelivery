@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jmarser.mydelivery.R
 import com.jmarser.mydelivery.core.ErrorCodeState
+import com.jmarser.mydelivery.domain.useCase.FormUseCase
+import com.jmarser.mydelivery.domain.useCase.SharedUseCase
 import com.jmarser.mydelivery.domain.useCase.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -29,7 +31,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val useCase: SignInUseCase
+    private val useCase: SignInUseCase,
+    private val formUseCase: FormUseCase,
+    private val sharedUseCase: SharedUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SignInUiState>(SignInUiState.Idle)
@@ -58,7 +62,7 @@ class SignInViewModel @Inject constructor(
     }
 
     private fun setEmail(value: String) {
-        val isValid = useCase.validateEmail(value)
+        val isValid = formUseCase.validateEmail(value)
         _formState.update {
             it.copy(
                 email = value,
@@ -71,7 +75,7 @@ class SignInViewModel @Inject constructor(
     }
 
     private fun setPassword(value: String) {
-        val result = useCase.validatePassword(value)
+        val result = formUseCase.validatePassword(value)
 
         _formState.update {
             it.copy(
@@ -111,7 +115,7 @@ class SignInViewModel @Inject constructor(
     }
 
     private fun validateCredentials() {
-        useCase.getCredentials()?.let { (email, password) ->
+        sharedUseCase.getCredentials()?.let { (email, password) ->
             login(email, password, false)
         }
     }
@@ -131,11 +135,20 @@ class SignInViewModel @Inject constructor(
 
             when (result) {
                 is SignInUiState.Success -> {
+                    sharedUseCase.saveCredentials(
+                        email = email,
+                        password = password,
+                        token = result.data.token
+                    )
+
                     _effect.emit(SignInEffect.ShowToast(context.getString(R.string.signin_success)))
                     _effect.emit(SignInEffect.NavigateToHome)
                 }
 
                 is SignInUiState.Failure -> {
+
+                    sharedUseCase.clearCredentials()
+
                     _dialogState.value = SignInDialogState(
                         title = context.getString(R.string.error),
                         message = context.getString(result.errorCodeState.resourceId),
