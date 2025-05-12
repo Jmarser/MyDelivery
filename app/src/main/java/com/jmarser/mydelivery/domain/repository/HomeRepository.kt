@@ -1,6 +1,7 @@
 package com.jmarser.mydelivery.domain.repository
 
 import com.jmarser.mydelivery.data.modelsDto.CategoryResponse
+import com.jmarser.mydelivery.data.modelsDto.RestaurantsResponse
 import com.jmarser.mydelivery.data.remote.repository.Resource
 
 /**
@@ -13,4 +14,6 @@ import com.jmarser.mydelivery.data.remote.repository.Resource
 interface HomeRepository {
 
     suspend fun getAllCategories(): Resource<CategoryResponse>
+
+    suspend fun getRestaurants(lat: Double, lon: Double): Resource<RestaurantsResponse>
 }

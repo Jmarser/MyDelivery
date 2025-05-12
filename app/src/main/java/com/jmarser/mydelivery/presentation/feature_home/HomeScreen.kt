@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jmarser.mydelivery.R
+import com.jmarser.mydelivery.presentation.components.SpacerHeightNormal
 import com.jmarser.mydelivery.ui.theme.MyDimens
 import kotlinx.coroutines.flow.collect
 
@@ -32,12 +33,17 @@ fun HomeScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val categoriesUiState by viewModel.categoryUiState.collectAsStateWithLifecycle()
+    val restaurantsUiState by viewModel.restaurantsUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect{effect ->
             when(effect){
                 is HomeEffect.CategorySelected -> {
                     Toast.makeText(context, "Seleccionastes: ${effect.category.name}", Toast.LENGTH_SHORT).show()
+                }
+
+                is HomeEffect.RestaurantSelected -> {
+                    Toast.makeText(context, "Seleccionastes: ${effect.restaurant.name}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -79,6 +85,22 @@ fun HomeScreen(
                 }
             }
             else ->{}
+        }
+
+        SpacerHeightNormal()
+
+        when(val state = restaurantsUiState){
+            is RestaurantsUiState.Success -> {
+                RestaurantsList(
+                    restaurants = state.data.data,
+                    onRestaurantSelected = {
+                        viewModel.onEvent(HomeEvent.OnRestaurantSelected(it))
+                    }
+                )
+            }
+            is RestaurantsUiState.Failure -> Text(text = "Error desconocido")
+            RestaurantsUiState.Empty -> Text(text = "No hay restaurantes para mostrar")
+            else -> {}
         }
     }
 }

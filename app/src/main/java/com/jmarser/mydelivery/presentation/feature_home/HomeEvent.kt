@@ -1,6 +1,7 @@
 package com.jmarser.mydelivery.presentation.feature_home
 
 import com.jmarser.mydelivery.domain.modelsDomain.CategoryDm
+import com.jmarser.mydelivery.domain.modelsDomain.RestaurantDm
 
 /**
  * Project: My Delivery
@@ -12,4 +13,5 @@ import com.jmarser.mydelivery.domain.modelsDomain.CategoryDm
 sealed interface HomeEvent {
 
     data class OnCategorySelected(val category: CategoryDm): HomeEvent
+    data class OnRestaurantSelected(val restaurant: RestaurantDm): HomeEvent
 }

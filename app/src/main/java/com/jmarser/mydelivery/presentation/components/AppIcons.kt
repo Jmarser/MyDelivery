@@ -1,7 +1,12 @@
 package com.jmarser.mydelivery.presentation.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Start
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,4 +38,12 @@ object AppIcons {
         @Composable get() = ImageVector.vectorResource(id = R.drawable.ic_eye_closed)
 
     val ic_password: ImageVector = Icons.Filled.Password
+
+    val ic_start: ImageVector = Icons.Filled.Star
+
+    val ic_not_favorite: ImageVector = Icons.Filled.FavoriteBorder
+
+    val ic_yes_favorite: ImageVector = Icons.Filled.Favorite
+
+    val ic_arrow_right: ImageVector = Icons.Filled.ArrowForwardIos
 }

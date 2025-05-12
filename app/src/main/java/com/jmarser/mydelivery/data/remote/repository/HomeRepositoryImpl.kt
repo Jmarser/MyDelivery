@@ -19,4 +19,8 @@ class HomeRepositoryImpl @Inject constructor(
     override suspend fun getAllCategories() = safeApiCall {
         apiService.getAllCategories()
     }
+
+    override suspend fun getRestaurants(lat: Double, lon: Double) = safeApiCall {
+        apiService.getRestaurants(lat, lon)
+    }
 }

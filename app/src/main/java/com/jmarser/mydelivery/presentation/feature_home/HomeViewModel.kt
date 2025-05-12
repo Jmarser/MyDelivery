@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jmarser.mydelivery.domain.modelsDomain.CategoryDm
+import com.jmarser.mydelivery.domain.modelsDomain.RestaurantDm
 import com.jmarser.mydelivery.domain.useCase.HomeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -40,13 +41,18 @@ class HomeViewModel @Inject constructor(
     private val _categoryUiState = MutableStateFlow<CategoriesUiState>(CategoriesUiState.Idle)
     val categoryUiState: StateFlow<CategoriesUiState> = _categoryUiState.asStateFlow()
 
+    private val _restaurentsUiState = MutableStateFlow<RestaurantsUiState>(RestaurantsUiState.Idle)
+    val restaurantsUiState: StateFlow<RestaurantsUiState> = _restaurentsUiState.asStateFlow()
+
     init {
         getAllCategories()
+        getRestaurants()
     }
 
     fun onEvent(event: HomeEvent){
         when(event){
             is HomeEvent.OnCategorySelected -> categorySelected(event.category)
+            is HomeEvent.OnRestaurantSelected -> restaurantSelected(event.restaurant)
         }
     }
 
@@ -60,11 +66,32 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getRestaurants(){
+        _restaurentsUiState.value = RestaurantsUiState.Loading
+
+        viewModelScope.launch {
+            val result = useCase.getRestaurants(
+                lat = 40.712776,
+                lon = -74.005978
+            )
+
+            _restaurentsUiState.value = result
+        }
+    }
+
     private fun categorySelected(category: CategoryDm){
         _uiState.update { it.copy(selectedCategory = category) }
 
         viewModelScope.launch {
             _uiEffect.emit(HomeEffect.CategorySelected(category))
+        }
+    }
+
+    private fun restaurantSelected(restaurant: RestaurantDm){
+        _uiState.update { it.copy(selectedRestaurant = restaurant) }
+
+        viewModelScope.launch {
+            _uiEffect.emit(HomeEffect.RestaurantSelected(restaurant))
         }
     }
 }

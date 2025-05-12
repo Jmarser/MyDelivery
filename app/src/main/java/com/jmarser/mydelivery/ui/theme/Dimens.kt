@@ -9,6 +9,7 @@ data class Dimens(
     val borderSmall: Dp = 2.dp,
     val borderNormal: Dp = 4.dp,
     val buttonHeightNormal: Dp = 56.dp,
+    val iconSizeExtraSmall: Dp = 16.dp,
     val iconSizeSmall: Dp = 24.dp,
     val iconSizeNormal: Dp = 36.dp,
     val iconSizeLarge: Dp = 48.dp,
@@ -32,6 +33,7 @@ val DefaultDimens = Dimens()
 
 val TabletDimens = Dimens(
     buttonHeightNormal = 64.dp,
+    iconSizeExtraSmall = 28.dp,
     iconSizeSmall = 36.dp,
     iconSizeNormal = 48.dp,
     iconSizeLarge = 60.dp,
