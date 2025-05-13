@@ -1,6 +1,11 @@
 package com.jmarser.mydelivery.presentation.feature_home
 
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -75,21 +80,33 @@ fun RestaurantsList(
                 )
             }
         }
-    }
 
-    SpacerHeightNormal()
+        SpacerHeightNormal()
 
-    LazyRow (
-        modifier = Modifier.height(229.dp)
-    ){
-        items(restaurants){restaurant ->
-            RestaurantItem(
-                restaurant = restaurant,
-                onRestaurantSelected = onRestaurantSelected
-            )
+        LazyRow (
+            modifier = Modifier.height(229.dp)
+        ){
+            items(restaurants, key = {it.id!!}){restaurant ->
+
+                AnimatedVisibility(
+                    visible = true,
+                    enter = fadeIn() + slideInVertically(),
+                    exit = fadeOut()
+                ) {
+                    RestaurantItem(
+                        modifier = Modifier
+                            .animateItem(
+                                fadeInSpec = tween(1000),
+                                fadeOutSpec = tween(1000)
+                            ),
+                        restaurant = restaurant,
+                        onRestaurantSelected = onRestaurantSelected
+                    )
+                }
+
+            }
         }
     }
-
 }
 
 @Preview(showBackground = false)

@@ -3,9 +3,10 @@ package com.jmarser.mydelivery.presentation.feature_home
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jmarser.mydelivery.core.ErrorCodeState
 import com.jmarser.mydelivery.domain.modelsDomain.CategoryDm
 import com.jmarser.mydelivery.domain.modelsDomain.RestaurantDm
-import com.jmarser.mydelivery.domain.useCase.HomeUseCase
+import com.jmarser.mydelivery.domain.useCases.HomeUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,7 +30,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val useCase: HomeUseCase
+    private val useCase: HomeUseCases
 ): ViewModel(){
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -79,8 +80,35 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getRestaurantsByCategory(category: CategoryDm){
+        _restaurentsUiState.value = RestaurantsUiState.Loading
+
+        if (category.id != null) {
+            viewModelScope.launch {
+                val result = useCase.getRestaurantsByCategory(
+                    lat = 40.712776,
+                    lon = -74.005978,
+                    categoryId = category.id
+                )
+
+                _restaurentsUiState.value = result
+            }
+        }else{
+            _restaurentsUiState.value = RestaurantsUiState.Failure(errorCodeState = ErrorCodeState.RESOURCE_NOT_FOUND)
+        }
+    }
+
     private fun categorySelected(category: CategoryDm){
-        _uiState.update { it.copy(selectedCategory = category) }
+
+        val currentCategory = _uiState.value.selectedCategory
+
+        if (currentCategory?.id == category.id){
+            _uiState.update { it.copy(selectedCategory = null) }
+            getRestaurants()
+        }else{
+            _uiState.update { it.copy(selectedCategory = category) }
+            getRestaurantsByCategory(category)
+        }
 
         viewModelScope.launch {
             _uiEffect.emit(HomeEffect.CategorySelected(category))

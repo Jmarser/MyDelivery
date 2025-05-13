@@ -1,6 +1,7 @@
 package com.jmarser.mydelivery.presentation.feature_home
 
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -17,6 +18,11 @@ fun CategoriesList(
     LazyRow {
         items(categories){category ->
             CategoryItem(
+                modifier = Modifier
+                    .animateItem(
+                        fadeInSpec = tween(1000),
+                        fadeOutSpec = tween(1000)
+                    ),
                 category = category,
                 isSelected = category.id == selectedCategory?.id,
                 onClick = {

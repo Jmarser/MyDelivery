@@ -34,4 +34,12 @@ interface ApiService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double
     ): Response<RestaurantsResponse>
+
+    @GET("restaurants")
+    suspend fun getRestaurantsByCategory(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("categoryId") categoryId: String
+    ): Response<RestaurantsResponse>
+
 }

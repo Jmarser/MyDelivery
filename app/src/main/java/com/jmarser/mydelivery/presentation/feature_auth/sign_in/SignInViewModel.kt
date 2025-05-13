@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jmarser.mydelivery.R
 import com.jmarser.mydelivery.core.ErrorCodeState
-import com.jmarser.mydelivery.domain.useCase.FormUseCase
-import com.jmarser.mydelivery.domain.useCase.SharedUseCase
-import com.jmarser.mydelivery.domain.useCase.SignInUseCase
+import com.jmarser.mydelivery.domain.useCases.FormUseCase
+import com.jmarser.mydelivery.domain.useCases.SharedUseCase
+import com.jmarser.mydelivery.domain.useCases.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow

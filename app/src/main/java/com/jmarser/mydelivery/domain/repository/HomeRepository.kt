@@ -16,4 +16,6 @@ interface HomeRepository {
     suspend fun getAllCategories(): Resource<CategoryResponse>
 
     suspend fun getRestaurants(lat: Double, lon: Double): Resource<RestaurantsResponse>
+
+    suspend fun getRestaurantsByCategory(lat: Double, lon: Double, category: String): Resource<RestaurantsResponse>
 }

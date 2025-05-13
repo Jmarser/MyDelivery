@@ -1,6 +1,8 @@
 package com.jmarser.mydelivery.presentation.feature_home
 
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,11 +17,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -33,15 +37,31 @@ import com.jmarser.mydelivery.ui.theme.Orange_enabled
 
 @Composable
 fun CategoryItem(
+    modifier: Modifier = Modifier,
     category: CategoryDm,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
+
+    val animatedBackgroundColor by animateColorAsState(
+        targetValue = if (isSelected) Orange_enabled else Color.White,
+        label = "BackgroundAnimation"
+    )
+
+    val animatedScale by animateFloatAsState(
+        targetValue = if(isSelected) 1.05f else 1f,
+        label = "scaleAnimation"
+    )
+
     Column (
-        modifier = Modifier
+        modifier = modifier
             .padding(MyDimens.dimens.paddingNormal)
             .height(90.dp)
             .width(60.dp)
+            .graphicsLayer {
+                scaleX = animatedScale
+                scaleY = animatedScale
+            }
             .clickable { onClick() }
             .shadow(
                 elevation = MyDimens.dimens.cardElevationNormal,
@@ -55,7 +75,7 @@ fun CategoryItem(
                 shape = MaterialTheme.shapes.extraLarge
             )
             .background(
-                color = if (isSelected) Orange_enabled else Color.White,
+                color = animatedBackgroundColor,
                 shape = MaterialTheme.shapes.extraLarge
             )
             .clip(MaterialTheme.shapes.extraLarge)

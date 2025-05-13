@@ -1,4 +1,4 @@
-package com.jmarser.mydelivery.domain.useCase
+package com.jmarser.mydelivery.domain.useCases
 
 import com.jmarser.mydelivery.domain.repository.SharedRepository
 import javax.inject.Inject

@@ -43,12 +43,13 @@ import com.jmarser.mydelivery.ui.theme.MyDimens
 
 @Composable
 fun RestaurantItem(
+    modifier: Modifier = Modifier,
     restaurant: RestaurantDm,
     onRestaurantSelected: (RestaurantDm) -> Unit
 ) {
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(MyDimens.dimens.paddingNormal)
             .width(250.dp)
             .height(229.dp)

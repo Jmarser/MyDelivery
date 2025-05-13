@@ -1,14 +1,11 @@
-package com.jmarser.mydelivery.domain.useCase
+package com.jmarser.mydelivery.domain.useCases
 
 import com.jmarser.mydelivery.core.ErrorCodeState
-import com.jmarser.mydelivery.core.PasswordValidationResult
-import com.jmarser.mydelivery.core.ValidationForm
 import com.jmarser.mydelivery.data.mappers.toDomain
 import com.jmarser.mydelivery.data.mappers.toDto
 import com.jmarser.mydelivery.data.remote.repository.Resource
 import com.jmarser.mydelivery.domain.modelsDomain.SignUpRequest
 import com.jmarser.mydelivery.domain.repository.AuthRepository
-import com.jmarser.mydelivery.domain.repository.SharedRepository
 import com.jmarser.mydelivery.presentation.feature_auth.sign_up.SignUpUiState
 import javax.inject.Inject
 

@@ -2,6 +2,10 @@ package com.jmarser.mydelivery.presentation.feature_home
 
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -91,12 +95,20 @@ fun HomeScreen(
 
         when(val state = restaurantsUiState){
             is RestaurantsUiState.Success -> {
-                RestaurantsList(
-                    restaurants = state.data.data,
-                    onRestaurantSelected = {
-                        viewModel.onEvent(HomeEvent.OnRestaurantSelected(it))
+                AnimatedContent(
+                    targetState = state.data.data,
+                    transitionSpec = {
+                        fadeIn() togetherWith fadeOut()
                     }
-                )
+                ) {restaurants ->
+                    RestaurantsList(
+                        restaurants = restaurants,
+                        onRestaurantSelected = {
+                            viewModel.onEvent(HomeEvent.OnRestaurantSelected(it))
+                        }
+                    )
+                }
+
             }
             is RestaurantsUiState.Failure -> Text(text = "Error desconocido")
             RestaurantsUiState.Empty -> Text(text = "No hay restaurantes para mostrar")
