@@ -7,5 +7,6 @@ data class HomeUiState(
     val categoriesState: CategoriesUiState = CategoriesUiState.Idle,
     val restaurantState: RestaurantsUiState = RestaurantsUiState.Idle,
     val selectedCategory: CategoryDm? = null,
-    val selectedRestaurant: RestaurantDm? = null
+    val selectedRestaurant: RestaurantDm? = null,
+    val searchQuery: String = ""
 )

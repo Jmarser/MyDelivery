@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jmarser.mydelivery.R
+import com.jmarser.mydelivery.presentation.components.CustomSearchBar
 import com.jmarser.mydelivery.presentation.components.SpacerHeightNormal
 import com.jmarser.mydelivery.ui.theme.MyDimens
 import kotlinx.coroutines.flow.collect
@@ -64,6 +65,13 @@ fun HomeScreen(
             text = stringResource(R.string.title_home),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.ExtraBold
+        )
+
+        CustomSearchBar(
+            state = viewModel.searchTextState,
+            onClearQuery = {
+                viewModel.onEvent(HomeEvent.ClearSearchQuery)
+            }
         )
 
         when(val state = categoriesUiState){

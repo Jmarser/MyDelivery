@@ -1,11 +1,15 @@
 package com.jmarser.mydelivery.presentation.feature_home
 
 import android.content.Context
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.delete
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jmarser.mydelivery.core.ErrorCodeState
 import com.jmarser.mydelivery.domain.modelsDomain.CategoryDm
 import com.jmarser.mydelivery.domain.modelsDomain.RestaurantDm
+import com.jmarser.mydelivery.domain.modelsDomain.RestaurantsListDm
 import com.jmarser.mydelivery.domain.useCases.HomeUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -15,6 +19,9 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +38,10 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val useCase: HomeUseCases
-): ViewModel(){
+) : ViewModel() {
+
+    val searchTextState = TextFieldState()
+    private var allRestaurants: List<RestaurantDm> = emptyList()
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -48,16 +58,18 @@ class HomeViewModel @Inject constructor(
     init {
         getAllCategories()
         getRestaurants()
+        observeSearchQuery()
     }
 
-    fun onEvent(event: HomeEvent){
-        when(event){
+    fun onEvent(event: HomeEvent) {
+        when (event) {
             is HomeEvent.OnCategorySelected -> categorySelected(event.category)
             is HomeEvent.OnRestaurantSelected -> restaurantSelected(event.restaurant)
+            HomeEvent.ClearSearchQuery -> clearSearchQuery()
         }
     }
 
-    private fun getAllCategories(){
+    private fun getAllCategories() {
         _categoryUiState.value = CategoriesUiState.Loading
 
         viewModelScope.launch {
@@ -67,7 +79,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getRestaurants(){
+    private fun getRestaurants() {
         _restaurentsUiState.value = RestaurantsUiState.Loading
 
         viewModelScope.launch {
@@ -76,11 +88,17 @@ class HomeViewModel @Inject constructor(
                 lon = -74.005978
             )
 
-            _restaurentsUiState.value = result
+            if (result is RestaurantsUiState.Success) {
+                allRestaurants = result.data.data
+                //_restaurentsUiState.value = result
+                applyFilters()
+            } else {
+                _restaurentsUiState.value = result
+            }
         }
     }
 
-    private fun getRestaurantsByCategory(category: CategoryDm){
+    private fun getRestaurantsByCategory(category: CategoryDm) {
         _restaurentsUiState.value = RestaurantsUiState.Loading
 
         if (category.id != null) {
@@ -91,21 +109,28 @@ class HomeViewModel @Inject constructor(
                     categoryId = category.id
                 )
 
-                _restaurentsUiState.value = result
+                if (result is RestaurantsUiState.Success) {
+                    allRestaurants = result.data.data
+                    //_restaurentsUiState.value = result
+                    applyFilters()
+                } else {
+                    _restaurentsUiState.value = result
+                }
             }
-        }else{
-            _restaurentsUiState.value = RestaurantsUiState.Failure(errorCodeState = ErrorCodeState.RESOURCE_NOT_FOUND)
+        } else {
+            _restaurentsUiState.value =
+                RestaurantsUiState.Failure(errorCodeState = ErrorCodeState.RESOURCE_NOT_FOUND)
         }
     }
 
-    private fun categorySelected(category: CategoryDm){
+    private fun categorySelected(category: CategoryDm) {
 
         val currentCategory = _uiState.value.selectedCategory
 
-        if (currentCategory?.id == category.id){
+        if (currentCategory?.id == category.id) {
             _uiState.update { it.copy(selectedCategory = null) }
             getRestaurants()
-        }else{
+        } else {
             _uiState.update { it.copy(selectedCategory = category) }
             getRestaurantsByCategory(category)
         }
@@ -115,11 +140,68 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun restaurantSelected(restaurant: RestaurantDm){
+    private fun restaurantSelected(restaurant: RestaurantDm) {
         _uiState.update { it.copy(selectedRestaurant = restaurant) }
 
         viewModelScope.launch {
             _uiEffect.emit(HomeEffect.RestaurantSelected(restaurant))
+        }
+    }
+
+    private fun clearSearchQuery() {
+        searchTextState.edit { delete(0, length) }
+    }
+
+    private fun observeSearchQuery() {
+        viewModelScope.launch {
+            snapshotFlow { searchTextState.text.toString() }
+                .debounce(300L)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    _uiState.update { it.copy(searchQuery = query) }
+                    applyFilters()
+                   /*
+                    val filtered = if (query.isBlank()) {
+                        allRestaurants
+                    } else {
+                        allRestaurants.filter {
+                            it.name != null
+                        }.filter {
+                            it.name!!.contains(query, ignoreCase = true)
+                        }
+                    }
+
+                    _restaurentsUiState.value = if (filtered.isEmpty()) {
+                        RestaurantsUiState.Empty
+                    } else {
+                        val data = RestaurantsListDm(data = filtered)
+                        RestaurantsUiState.Success(data = data)
+                    }
+                    */
+                }
+        }
+    }
+
+    private fun applyFilters(){
+        val query = _uiState.value.searchQuery
+        val selectedCategory = _uiState.value.selectedCategory
+
+        val filtered = allRestaurants
+            .asSequence()
+            .filter { restaurant ->
+                selectedCategory?.id?.let{catId ->
+                    restaurant.categoryId == catId
+                }?: true
+            }
+            .filter { restaurant ->
+                restaurant.name?.contains(query, ignoreCase = true) ?: true
+            }
+            .toList()
+
+        _restaurentsUiState.value = if (filtered.isEmpty()){
+            RestaurantsUiState.Empty
+        }else{
+            RestaurantsUiState.Success(RestaurantsListDm(filtered))
         }
     }
 }

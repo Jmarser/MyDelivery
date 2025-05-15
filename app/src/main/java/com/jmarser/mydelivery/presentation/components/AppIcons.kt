@@ -7,6 +7,8 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Start
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -46,4 +48,8 @@ object AppIcons {
     val ic_yes_favorite: ImageVector = Icons.Filled.Favorite
 
     val ic_arrow_right: ImageVector = Icons.Filled.ArrowForwardIos
+
+    val ic_searchbar: ImageVector = Icons.Rounded.Search
+
+    val ic_clear: ImageVector = Icons.Rounded.Clear
 }
