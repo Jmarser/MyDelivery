@@ -45,7 +45,9 @@ import com.jmarser.mydelivery.ui.theme.MyDimens
 fun RestaurantItem(
     modifier: Modifier = Modifier,
     restaurant: RestaurantDm,
-    onRestaurantSelected: (RestaurantDm) -> Unit
+    isFavorite: Boolean,
+    onRestaurantSelected: (RestaurantDm) -> Unit,
+    onFavoriteToggle: (RestaurantDm) -> Unit
 ) {
 
     Box(
@@ -138,12 +140,14 @@ fun RestaurantItem(
                             .size(16.dp)
                             .clip(CircleShape)
                             .background(color = Color.White.copy(alpha = .8f)),
-                        onClick = {}
+                        onClick = {
+                            onFavoriteToggle(restaurant)
+                        }
                     ) {
                         Icon(
-                            imageVector = AppIcons.ic_not_favorite,
+                            imageVector = if (isFavorite) AppIcons.ic_yes_favorite else AppIcons.ic_not_favorite,
                             contentDescription = "favorito",
-                            tint = Color.Black
+                            tint = if (isFavorite) Color.Red else Color.Black
                         )
                     }
                 }
@@ -221,8 +225,8 @@ fun RestaurantItemPreview() {
             imageUrl = "https://www.marthastewart.com/thmb/3N-0cJgJfLDyytnCehJd4aVgHJw=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/white-pizza-172-d112100_horiz-c868dcf28ed44b21af90f11797d6d7d6.jpgitokKoRSmCVm",
             distance = 0.0
         ),
-        onRestaurantSelected = {
-
-        }
+        onRestaurantSelected = {},
+        isFavorite = true,
+        onFavoriteToggle = {}
     )
 }

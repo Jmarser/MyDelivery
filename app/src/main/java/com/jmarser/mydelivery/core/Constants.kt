@@ -7,4 +7,8 @@ object Constants {
     const val EMAIL_USER = "emailUser"
     const val PASSWORD_USER = "passwordUser"
 
+    // Room
+    const val DATABASE_NAME= "db_delivery"
+    const val TABLE_RESTAURANTS_FAVORITES = "restaurants_favorites"
+
 }

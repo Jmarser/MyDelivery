@@ -15,4 +15,5 @@ sealed interface HomeEvent {
     data class OnCategorySelected(val category: CategoryDm): HomeEvent
     data class OnRestaurantSelected(val restaurant: RestaurantDm): HomeEvent
     object ClearSearchQuery: HomeEvent
+    data class ToggleFavoriteRestaurant(val restaurant: RestaurantDm): HomeEvent
 }

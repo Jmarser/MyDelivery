@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -55,10 +56,14 @@ class HomeViewModel @Inject constructor(
     private val _restaurentsUiState = MutableStateFlow<RestaurantsUiState>(RestaurantsUiState.Idle)
     val restaurantsUiState: StateFlow<RestaurantsUiState> = _restaurentsUiState.asStateFlow()
 
+    private val _favoritesRestaurants = MutableStateFlow<List<RestaurantDm>>(emptyList())
+
     init {
         getAllCategories()
         getRestaurants()
+        getAllRestaurantsFavorites()
         observeSearchQuery()
+        observeFavoritesChanges()
     }
 
     fun onEvent(event: HomeEvent) {
@@ -66,6 +71,7 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.OnCategorySelected -> categorySelected(event.category)
             is HomeEvent.OnRestaurantSelected -> restaurantSelected(event.restaurant)
             HomeEvent.ClearSearchQuery -> clearSearchQuery()
+            is HomeEvent.ToggleFavoriteRestaurant -> toggleFavoriteRestaurant(event.restaurant)
         }
     }
 
@@ -90,7 +96,6 @@ class HomeViewModel @Inject constructor(
 
             if (result is RestaurantsUiState.Success) {
                 allRestaurants = result.data.data
-                //_restaurentsUiState.value = result
                 applyFilters()
             } else {
                 _restaurentsUiState.value = result
@@ -111,7 +116,6 @@ class HomeViewModel @Inject constructor(
 
                 if (result is RestaurantsUiState.Success) {
                     allRestaurants = result.data.data
-                    //_restaurentsUiState.value = result
                     applyFilters()
                 } else {
                     _restaurentsUiState.value = result
@@ -160,24 +164,6 @@ class HomeViewModel @Inject constructor(
                 .collectLatest { query ->
                     _uiState.update { it.copy(searchQuery = query) }
                     applyFilters()
-                   /*
-                    val filtered = if (query.isBlank()) {
-                        allRestaurants
-                    } else {
-                        allRestaurants.filter {
-                            it.name != null
-                        }.filter {
-                            it.name!!.contains(query, ignoreCase = true)
-                        }
-                    }
-
-                    _restaurentsUiState.value = if (filtered.isEmpty()) {
-                        RestaurantsUiState.Empty
-                    } else {
-                        val data = RestaurantsListDm(data = filtered)
-                        RestaurantsUiState.Success(data = data)
-                    }
-                    */
                 }
         }
     }
@@ -185,6 +171,8 @@ class HomeViewModel @Inject constructor(
     private fun applyFilters(){
         val query = _uiState.value.searchQuery
         val selectedCategory = _uiState.value.selectedCategory
+        val favoritesRestaurants = _favoritesRestaurants.value
+        val frIds = favoritesRestaurants.map { it.id }.toSet()
 
         val filtered = allRestaurants
             .asSequence()
@@ -196,12 +184,38 @@ class HomeViewModel @Inject constructor(
             .filter { restaurant ->
                 restaurant.name?.contains(query, ignoreCase = true) ?: true
             }
+            .map { restaurant ->
+                restaurant.copy(isFavorite = frIds.contains(restaurant.id))
+            }
             .toList()
 
         _restaurentsUiState.value = if (filtered.isEmpty()){
             RestaurantsUiState.Empty
         }else{
             RestaurantsUiState.Success(RestaurantsListDm(filtered))
+        }
+    }
+
+
+    private fun toggleFavoriteRestaurant(restaurant: RestaurantDm){
+        viewModelScope.launch {
+            useCase.favoriteRestaurant.toggleFavorite(restaurant)
+        }
+    }
+
+    private fun getAllRestaurantsFavorites(){
+        viewModelScope.launch {
+            useCase.favoriteRestaurant.getFavorites().collect{favorites ->
+                _favoritesRestaurants.value = favorites
+            }
+        }
+    }
+
+    private fun observeFavoritesChanges(){
+        viewModelScope.launch {
+            _favoritesRestaurants.collect{
+                applyFilters()
+            }
         }
     }
 }

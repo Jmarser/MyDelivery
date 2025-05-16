@@ -6,5 +6,6 @@ data class RestaurantDm(
     val address: String?,
     val categoryId: String?,
     val imageUrl: String?,
-    val distance: Double?
+    val distance: Double?,
+    val isFavorite: Boolean = false
 )

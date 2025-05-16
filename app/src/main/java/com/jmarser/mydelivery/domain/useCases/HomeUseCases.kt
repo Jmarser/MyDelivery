@@ -19,5 +19,6 @@ import javax.inject.Inject
 data class HomeUseCases @Inject constructor(
     val getAllCategories: GetAllCategoriesUseCase,
     val getRestaurants: GetRestaurantsUseCase,
-    val getRestaurantsByCategory: GetRestaurantsByCategoryUseCase
+    val getRestaurantsByCategory: GetRestaurantsByCategoryUseCase,
+    val favoriteRestaurant: FavoritesRestaurantsUseCase
 )

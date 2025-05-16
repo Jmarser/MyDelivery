@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,6 +40,8 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val categoriesUiState by viewModel.categoryUiState.collectAsStateWithLifecycle()
     val restaurantsUiState by viewModel.restaurantsUiState.collectAsStateWithLifecycle()
+
+    val listState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect{effect ->
@@ -110,9 +113,13 @@ fun HomeScreen(
                     }
                 ) {restaurants ->
                     RestaurantsList(
+                        listState = listState,
                         restaurants = restaurants,
                         onRestaurantSelected = {
                             viewModel.onEvent(HomeEvent.OnRestaurantSelected(it))
+                        },
+                        onFavoriteToggle = {
+                            viewModel.onEvent(HomeEvent.ToggleFavoriteRestaurant(it))
                         }
                     )
                 }

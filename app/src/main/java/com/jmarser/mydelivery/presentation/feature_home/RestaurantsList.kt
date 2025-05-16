@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,8 +40,10 @@ import com.jmarser.mydelivery.ui.theme.Orange_enabled
 @Composable
 fun RestaurantsList(
     modifier: Modifier = Modifier,
+    listState: LazyListState,
     restaurants: List<RestaurantDm>,
-    onRestaurantSelected: (RestaurantDm) -> Unit
+    onRestaurantSelected: (RestaurantDm) -> Unit,
+    onFavoriteToggle: (RestaurantDm) -> Unit
 ) {
 
     Column (
@@ -84,7 +88,8 @@ fun RestaurantsList(
         SpacerHeightNormal()
 
         LazyRow (
-            modifier = Modifier.height(229.dp)
+            modifier = Modifier.height(229.dp),
+            state = listState
         ){
             items(restaurants, key = {it.id!!}){restaurant ->
 
@@ -100,7 +105,9 @@ fun RestaurantsList(
                                 fadeOutSpec = tween(1000)
                             ),
                         restaurant = restaurant,
-                        onRestaurantSelected = onRestaurantSelected
+                        onRestaurantSelected = onRestaurantSelected,
+                        onFavoriteToggle = onFavoriteToggle,
+                        isFavorite = restaurant.isFavorite
                     )
                 }
 
@@ -156,6 +163,8 @@ fun RestaurantsListPreview() {
                 distance = 0.0
             )
         ),
-        onRestaurantSelected = {}
+        onRestaurantSelected = {},
+        onFavoriteToggle = {},
+        listState = rememberLazyListState()
     )
 }
