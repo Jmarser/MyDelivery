@@ -67,4 +67,6 @@
     <string name="popular_restaurants">Restaurantes populares</string>
     <string name="view_all">Ver todos</string>
 
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at fringilla elit. Etiam tristique venenatis tincidunt. In vitae molestie erat. Suspendisse lorem nulla, volutpat in feugiat in, ullamcorper vitae nisi. Cras hendrerit lectus porta elit.</string>
+
 </resources>

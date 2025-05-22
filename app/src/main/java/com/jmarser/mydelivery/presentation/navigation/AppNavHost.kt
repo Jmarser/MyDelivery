@@ -8,11 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.jmarser.mydelivery.presentation.Greeting
 import com.jmarser.mydelivery.presentation.feature_auth.sign_in.SignInScreen
 import com.jmarser.mydelivery.presentation.feature_auth.sign_up.SignUpScreen
 import com.jmarser.mydelivery.presentation.feature_auth.welcome.WelcomeScreen
 import com.jmarser.mydelivery.presentation.feature_home.HomeScreen
+import com.jmarser.mydelivery.presentation.feature_restaurantDetails.RestaurantDetailsScreen
 
 /**
  * Project: My Delivery
@@ -20,11 +22,11 @@ import com.jmarser.mydelivery.presentation.feature_home.HomeScreen
  * Author: Tu Jmarser <aenur32@gmail.com>
  * Created: 16/04/2025
  */
- 
+
 @Composable
 fun AppNavHost(
     navController: NavHostController
-){
+) {
     val ANIMATION_DURATION = 400
 
     NavHost(
@@ -54,8 +56,8 @@ fun AppNavHost(
                 animationSpec = tween(ANIMATION_DURATION)
             ) + fadeOut(animationSpec = tween(ANIMATION_DURATION))
         }
-    ){
-        composable<AppRoutes.Welcome>{
+    ) {
+        composable<AppRoutes.Welcome> {
             WelcomeScreen(
                 onNavigateToSignIn = {
                     navController.navigateToSignIn()
@@ -92,7 +94,21 @@ fun AppNavHost(
         }
 
         composable<AppRoutes.Home> {
-            HomeScreen()
+            HomeScreen(
+                onNavigateToRestaurantDetails = { restaurantId ->
+                    navController.navigate(AppRoutes.RestaurantDetails(restaurantId))
+                }
+            )
+        }
+
+        composable<AppRoutes.RestaurantDetails> {
+            val args = it.toRoute<AppRoutes.RestaurantDetails>()
+            RestaurantDetailsScreen(
+                restaurantId = args.restaurantId,
+                onNavigateToBack = {
+                    navController.navigateToBack()
+                }
+            )
         }
     }
 }

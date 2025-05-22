@@ -15,4 +15,5 @@ interface FavoriteRestaurantRepository {
     suspend fun toggleFavorite(restaurant: RestaurantDm)
 
     fun getFavorites(): Flow<List<RestaurantDm>>
+
 }

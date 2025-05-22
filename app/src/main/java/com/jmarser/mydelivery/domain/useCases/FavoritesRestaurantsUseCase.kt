@@ -19,4 +19,5 @@ class FavoritesRestaurantsUseCase @Inject constructor(
     suspend fun toggleFavorite(restaurant: RestaurantDm) = repo.toggleFavorite(restaurant)
 
     fun getFavorites(): Flow<List<RestaurantDm>> = repo.getFavorites()
+
 }

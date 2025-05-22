@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.jmarser.mydelivery.core.Constants
 import com.jmarser.mydelivery.data.local.room.entities.RestaurantEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -24,9 +25,9 @@ interface RestaurantDao {
     @Delete
     suspend fun delete(restaurant: RestaurantEntity)
 
-    @Query("SELECT * FROM restaurants_favorites")
+    @Query("SELECT * FROM ${Constants.TABLE_RESTAURANTS_FAVORITES}")
     fun getAll(): Flow<List<RestaurantEntity>>
 
-    @Query("SELECT * FROM restaurants_favorites WHERE id = :id")
+    @Query("SELECT * FROM ${Constants.TABLE_RESTAURANTS_FAVORITES} WHERE id = :id")
     suspend fun getById(id: String): RestaurantEntity?
 }

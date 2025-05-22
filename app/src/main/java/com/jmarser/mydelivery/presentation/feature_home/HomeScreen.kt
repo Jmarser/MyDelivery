@@ -33,7 +33,8 @@ import kotlinx.coroutines.flow.collect
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onNavigateToRestaurantDetails: (String) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -44,24 +45,36 @@ fun HomeScreen(
     val listState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
-        viewModel.uiEffect.collect{effect ->
-            when(effect){
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
                 is HomeEffect.CategorySelected -> {
-                    Toast.makeText(context, "Seleccionastes: ${effect.category.name}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Seleccionastes: ${effect.category.name}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 is HomeEffect.RestaurantSelected -> {
-                    Toast.makeText(context, "Seleccionastes: ${effect.restaurant.name}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Seleccionastes: ${effect.restaurant.name}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    onNavigateToRestaurantDetails(effect.restaurant.id ?: "")
                 }
             }
         }
     }
 
-    Column (
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = MyDimens.dimens.paddingNormal, vertical = MyDimens.dimens.paddingMedium)
-    ){
+            .padding(
+                horizontal = MyDimens.dimens.paddingNormal,
+                vertical = MyDimens.dimens.paddingMedium
+            )
+    ) {
         Text(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -77,17 +90,19 @@ fun HomeScreen(
             }
         )
 
-        when(val state = categoriesUiState){
+        when (val state = categoriesUiState) {
             CategoriesUiState.Loading -> CircularProgressIndicator()
             CategoriesUiState.Empty -> {
                 Text(text = "No hay datos para mostrar")
             }
+
             is CategoriesUiState.Failure -> {
                 Text(text = stringResource(state.errorCodeState.resourceId))
             }
+
             is CategoriesUiState.Success -> {
                 val categories = state.data?.data.orEmpty()
-                if (categories.isNotEmpty()){
+                if (categories.isNotEmpty()) {
                     CategoriesList(
                         categories = categories,
                         selectedCategory = uiState.selectedCategory,
@@ -95,23 +110,24 @@ fun HomeScreen(
                             viewModel.onEvent(HomeEvent.OnCategorySelected(it))
                         }
                     )
-                }else{
+                } else {
                     Text(text = "Sin datos")
                 }
             }
-            else ->{}
+
+            else -> {}
         }
 
         SpacerHeightNormal()
 
-        when(val state = restaurantsUiState){
+        when (val state = restaurantsUiState) {
             is RestaurantsUiState.Success -> {
                 AnimatedContent(
                     targetState = state.data.data,
                     transitionSpec = {
                         fadeIn() togetherWith fadeOut()
                     }
-                ) {restaurants ->
+                ) { restaurants ->
                     RestaurantsList(
                         listState = listState,
                         restaurants = restaurants,
@@ -125,6 +141,7 @@ fun HomeScreen(
                 }
 
             }
+
             is RestaurantsUiState.Failure -> Text(text = "Error desconocido")
             RestaurantsUiState.Empty -> Text(text = "No hay restaurantes para mostrar")
             else -> {}
@@ -135,5 +152,8 @@ fun HomeScreen(
 @Preview(showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(modifier = Modifier)
+    HomeScreen(
+        modifier = Modifier,
+        onNavigateToRestaurantDetails = {}
+    )
 }

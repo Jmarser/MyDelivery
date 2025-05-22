@@ -1,6 +1,7 @@
 package com.jmarser.mydelivery.presentation.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -52,4 +53,6 @@ object AppIcons {
     val ic_searchbar: ImageVector = Icons.Rounded.Search
 
     val ic_clear: ImageVector = Icons.Rounded.Clear
+
+    val ic_back: ImageVector = Icons.Filled.ArrowBackIosNew
 }

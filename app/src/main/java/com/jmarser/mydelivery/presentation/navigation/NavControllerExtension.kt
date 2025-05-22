@@ -75,3 +75,7 @@ fun NavHostController.navigateToHome(){
         launchSingleTop = true
     }
 }
+
+fun NavHostController.navigateToBack(){
+    this.popBackStack()
+}

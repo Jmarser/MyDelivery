@@ -23,4 +23,7 @@ sealed class AppRoutes() {
     @Serializable
     object Home
 
+    @Serializable
+    data class RestaurantDetails(val restaurantId: String)
+
 }

@@ -1,5 +1,7 @@
 package com.jmarser.mydelivery.data.remote.repository
 
+import com.jmarser.mydelivery.data.modelsDto.DishesResponse
+import com.jmarser.mydelivery.data.modelsDto.RestaurantDetailsResponse
 import com.jmarser.mydelivery.data.modelsDto.RestaurantsResponse
 import com.jmarser.mydelivery.data.remote.network.ApiService
 import com.jmarser.mydelivery.data.remote.network.SafeApiCall
@@ -31,5 +33,13 @@ class HomeRepositoryImpl @Inject constructor(
         category: String
     )= safeApiCall {
         apiService.getRestaurantsByCategory(lat, lon, category)
+    }
+
+    override suspend fun getRestaurantById(restaurantId: String) = safeApiCall {
+        apiService.getRestaurantById(restaurantId)
+    }
+
+    override suspend fun getDishesByRestaurant(restaurantId: String) = safeApiCall {
+        apiService.getDishesByRestaurant(restaurantId)
     }
 }

@@ -2,6 +2,8 @@ package com.jmarser.mydelivery.data.remote.network
 
 import com.jmarser.mydelivery.data.modelsDto.AuthResponse
 import com.jmarser.mydelivery.data.modelsDto.CategoryResponse
+import com.jmarser.mydelivery.data.modelsDto.DishesResponse
+import com.jmarser.mydelivery.data.modelsDto.RestaurantDetailsResponse
 import com.jmarser.mydelivery.data.modelsDto.RestaurantsResponse
 import com.jmarser.mydelivery.data.modelsDto.SignInRequestDto
 import com.jmarser.mydelivery.data.modelsDto.SignUpRequestDto
@@ -9,6 +11,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -41,5 +44,11 @@ interface ApiService {
         @Query("lon") lon: Double,
         @Query("categoryId") categoryId: String
     ): Response<RestaurantsResponse>
+
+    @GET("restaurants/{id}")
+    suspend fun getRestaurantById(@Path("id") restaurantId: String): Response<RestaurantDetailsResponse>
+
+    @GET("restaurants/{id}/menu")
+    suspend fun getDishesByRestaurant(@Path("id") restaurantId: String): Response<DishesResponse>
 
 }
