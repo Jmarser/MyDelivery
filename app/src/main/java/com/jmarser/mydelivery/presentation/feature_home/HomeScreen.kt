@@ -25,8 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jmarser.mydelivery.R
+import com.jmarser.mydelivery.core.ErrorCodeState
 import com.jmarser.mydelivery.presentation.components.CustomSearchBar
+import com.jmarser.mydelivery.presentation.components.ScreenEmpty
+import com.jmarser.mydelivery.presentation.components.ScreenFailure
+import com.jmarser.mydelivery.presentation.components.ScreenLoading
 import com.jmarser.mydelivery.presentation.components.SpacerHeightNormal
+import com.jmarser.mydelivery.presentation.feature_restaurantDetails.RestaurantDetailsEvent
 import com.jmarser.mydelivery.ui.theme.MyDimens
 import kotlinx.coroutines.flow.collect
 
@@ -56,11 +61,6 @@ fun HomeScreen(
                 }
 
                 is HomeEffect.RestaurantSelected -> {
-                    Toast.makeText(
-                        context,
-                        "Seleccionastes: ${effect.restaurant.name}",
-                        Toast.LENGTH_SHORT
-                    ).show()
                     onNavigateToRestaurantDetails(effect.restaurant.id ?: "")
                 }
             }
@@ -91,13 +91,26 @@ fun HomeScreen(
         )
 
         when (val state = categoriesUiState) {
-            CategoriesUiState.Loading -> CircularProgressIndicator()
+            CategoriesUiState.Loading -> {
+                ScreenLoading(
+                    message = stringResource(R.string.loading_categories)
+                )
+            }
             CategoriesUiState.Empty -> {
-                Text(text = "No hay datos para mostrar")
+                ScreenEmpty(
+                    title = stringResource(R.string.there_are_no_categories_to_display),
+                    subTitle = stringResource(R.string.please_try_again_later),
+                    onNavigateToBack = {}
+                )
             }
 
             is CategoriesUiState.Failure -> {
-                Text(text = stringResource(state.errorCodeState.resourceId))
+                ScreenFailure(
+                    isNetwork = state.isNetworkError ?: false,
+                    message = stringResource(state.errorCodeState.resourceId),
+                    onRetry = {},
+                    onNavigateToBack = {}
+                )
             }
 
             is CategoriesUiState.Success -> {
@@ -111,11 +124,22 @@ fun HomeScreen(
                         }
                     )
                 } else {
-                    Text(text = "Sin datos")
+                    ScreenEmpty(
+                        title = stringResource(R.string.there_are_no_categories_to_display),
+                        subTitle = stringResource(R.string.please_try_again_later),
+                        onNavigateToBack = {}
+                    )
                 }
             }
 
-            else -> {}
+            else -> {
+                ScreenFailure(
+                    isNetwork = false,
+                    message = stringResource(ErrorCodeState.UNKNOWN_ERROR.resourceId),
+                    onRetry = {},
+                    onNavigateToBack = {}
+                )
+            }
         }
 
         SpacerHeightNormal()

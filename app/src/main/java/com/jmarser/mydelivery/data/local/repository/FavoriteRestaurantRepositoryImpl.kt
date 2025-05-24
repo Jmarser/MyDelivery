@@ -29,4 +29,10 @@ class FavoriteRestaurantRepositoryImpl @Inject constructor(
     override fun getFavorites(): Flow<List<RestaurantDm>> {
         return dao.getAll().map { list -> list.map { it.toDomain() } }
     }
+
+    override fun getByIdFlow(id: String): Flow<RestaurantDm?> {
+        return dao.getByIdFlow(id).map { it?.toDomain() }
+    }
+
+
 }

@@ -16,4 +16,6 @@ interface FavoriteRestaurantRepository {
 
     fun getFavorites(): Flow<List<RestaurantDm>>
 
+    fun getByIdFlow(id: String): Flow<RestaurantDm?>
+
 }

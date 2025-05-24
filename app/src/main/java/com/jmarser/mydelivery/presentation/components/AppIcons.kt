@@ -3,11 +3,14 @@ package com.jmarser.mydelivery.presentation.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Start
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
@@ -55,4 +58,12 @@ object AppIcons {
     val ic_clear: ImageVector = Icons.Rounded.Clear
 
     val ic_back: ImageVector = Icons.Filled.ArrowBackIosNew
+
+    val ic_empty: ImageVector = Icons.Default.SearchOff
+
+    val ic_not_network: ImageVector = Icons.Default.WifiOff
+
+    val ic_error_server: ImageVector = Icons.Default.CloudOff
+
+    val ic_retry: ImageVector = Icons.Default.Replay
 }

@@ -5,5 +5,6 @@ import javax.inject.Inject
 data class RestaurantDetailsUseCases @Inject constructor(
     val getRestaurantDetailsUseCase: GetRestaurantByIdUseCase,
     val getDishesByRestaurantUseCase: GetDishesByRestaurantUseCase,
-    val favoriteRestaurant: FavoritesRestaurantsUseCase
+    val favoriteRestaurant: FavoritesRestaurantsUseCase,
+    val favoriteDishes: FavoriteDishesUseCase
 )

@@ -10,5 +10,6 @@ object Constants {
     // Room
     const val DATABASE_NAME= "db_delivery"
     const val TABLE_RESTAURANTS_FAVORITES = "restaurants_favorites"
+    const val TABLE_DISHES_FAVORITES = "dishes_favorites"
 
 }

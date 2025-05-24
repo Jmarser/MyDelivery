@@ -1,9 +1,8 @@
 package com.jmarser.mydelivery.presentation.feature_restaurantDetails
 
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,22 +11,24 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jmarser.mydelivery.R
+import com.jmarser.mydelivery.core.ErrorCodeState
 import com.jmarser.mydelivery.presentation.components.HeaderScreenDetails
+import com.jmarser.mydelivery.presentation.components.ScreenEmpty
+import com.jmarser.mydelivery.presentation.components.ScreenFailure
+import com.jmarser.mydelivery.presentation.components.ScreenLoading
 import com.jmarser.mydelivery.presentation.components.TitleScreenDetails
 import com.jmarser.mydelivery.ui.theme.MyDimens
 
@@ -39,25 +40,49 @@ fun RestaurantDetailsScreen(
     onNavigateToBack: () -> Unit
 ) {
 
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val dishesState by viewModel.dishesUiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect{effect ->
+            when(effect){
+                RestaurantDetailsEffect.NavigateToBack -> onNavigateToBack()
+                is RestaurantDetailsEffect.NavigateToDishDetails -> {
+                    Toast.makeText(context, "Seleccionado el plato: ${effect.dish.name}", Toast.LENGTH_SHORT).show()
+                }
+                is RestaurantDetailsEffect.ShowToast -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+
     when(val details = uiState){
         RestaurantDetailsUiState.Empty -> {
-            Text(
-                text = "Restaurante no encontrado"
+            ScreenEmpty(
+                title = stringResource(R.string.no_data_to_display),
+                subTitle = stringResource(R.string.please_try_again_later),
+                onNavigateToBack = {
+                    viewModel.onEvent(RestaurantDetailsEvent.onNavigateToBack)
+                }
             )
         }
         is RestaurantDetailsUiState.Failure -> {
-            Text(
-                text = "Error desconocido"
+            ScreenFailure(
+                isNetwork = details.isNetwork ?: false,
+                message = stringResource(details.errorCodeState.resourceId),
+                onRetry = {
+                    viewModel.onEvent(RestaurantDetailsEvent.OnRetry)
+                },
+                onNavigateToBack = {
+                    viewModel.onEvent(RestaurantDetailsEvent.onNavigateToBack)
+                }
             )
         }
         RestaurantDetailsUiState.Loading -> {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+            ScreenLoading(message = stringResource(R.string.loading_restaurant_details))
         }
         is RestaurantDetailsUiState.Success -> {
 
@@ -77,10 +102,10 @@ fun RestaurantDetailsScreen(
                     HeaderScreenDetails(
                         restaurant = details.data,
                         onNavigateToBack = {
-                            onNavigateToBack()
+                            viewModel.onEvent(RestaurantDetailsEvent.onNavigateToBack)
                         },
                         onFavoriteToggle = {
-
+                            viewModel.onEvent(RestaurantDetailsEvent.ToggleFavoriteRestaurant(it))
                         }
                     )
                 }
@@ -110,6 +135,7 @@ fun RestaurantDetailsScreen(
                     )
                 }
 
+                // Sección para mostrar el estado del listado de platos
                 when(val dishes = dishesState){
                     DishesUiState.Loading -> {
                         item (
@@ -117,12 +143,10 @@ fun RestaurantDetailsScreen(
                                 GridItemSpan(2)
                             }
                         ){
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                                ){
-                                CircularProgressIndicator()
-                            }
+                            ScreenLoading(
+                                message = stringResource(R.string.loading_restaurant_dishes)
+                            )
+
                         }
                     }
                     DishesUiState.Empty -> {
@@ -132,8 +156,12 @@ fun RestaurantDetailsScreen(
                                 GridItemSpan(2)
                             }
                         ){
-                            Text(
-                                text = "No hay platos para mostrar"
+                            ScreenEmpty(
+                                title = stringResource(R.string.no_dishes_to_display),
+                                subTitle = stringResource(R.string.please_try_again_later),
+                                onNavigateToBack = {
+                                    viewModel.onEvent(RestaurantDetailsEvent.onNavigateToBack)
+                                }
                             )
                         }
                     }
@@ -143,9 +171,18 @@ fun RestaurantDetailsScreen(
                                 GridItemSpan(2)
                             }
                         ){
-                            Text(
-                                text = "Error desconocido"
+
+                            ScreenFailure(
+                                isNetwork = dishes.isNetwork ?: false,
+                                message = stringResource(dishes.errorCodeState.resourceId),
+                                onRetry = {
+                                    viewModel.onEvent(RestaurantDetailsEvent.OnRetry)
+                                },
+                                onNavigateToBack = {
+                                    viewModel.onEvent(RestaurantDetailsEvent.onNavigateToBack)
+                                }
                             )
+
                         }
 
                     }
@@ -156,8 +193,12 @@ fun RestaurantDetailsScreen(
                         items(dis){dish ->
                             DishesItem(
                                 dish = dish,
-                                onDishSelected = {},
-                                onToggleFavoriteDish = {}
+                                onDishSelected = {
+                                    viewModel.onEvent(RestaurantDetailsEvent.OnDishSelected(it))
+                                },
+                                onToggleFavoriteDish = {
+                                    viewModel.onEvent(RestaurantDetailsEvent.ToggleFavoritesDishes(it))
+                                }
                             )
                         }
                     }
@@ -167,8 +208,15 @@ fun RestaurantDetailsScreen(
                                 GridItemSpan(2)
                             }
                         ){
-                            Text(
-                                text = "Error desconocido"
+                            ScreenFailure(
+                                isNetwork = false,
+                                message = stringResource(ErrorCodeState.UNKNOWN_ERROR.resourceId),
+                                onRetry = {
+                                    viewModel.onEvent(RestaurantDetailsEvent.OnRetry)
+                                },
+                                onNavigateToBack = {
+                                    viewModel.onEvent(RestaurantDetailsEvent.onNavigateToBack)
+                                }
                             )
                         }
                     }
@@ -177,8 +225,15 @@ fun RestaurantDetailsScreen(
         }
 
         else -> {
-            Text(
-                text = "Error desconocido"
+            ScreenFailure(
+                isNetwork = false,
+                message = stringResource(ErrorCodeState.UNKNOWN_ERROR.resourceId),
+                onRetry = {
+                    viewModel.onEvent(RestaurantDetailsEvent.OnRetry)
+                },
+                onNavigateToBack = {
+                    viewModel.onEvent(RestaurantDetailsEvent.onNavigateToBack)
+                }
             )
         }
     }

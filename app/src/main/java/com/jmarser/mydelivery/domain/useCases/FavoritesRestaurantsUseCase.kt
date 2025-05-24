@@ -20,4 +20,5 @@ class FavoritesRestaurantsUseCase @Inject constructor(
 
     fun getFavorites(): Flow<List<RestaurantDm>> = repo.getFavorites()
 
+    fun getByIdFlow(id: String): Flow<RestaurantDm?> = repo.getByIdFlow(id)
 }

@@ -23,6 +23,10 @@
     <string name="dont_have_account">¿No tienes cuenta?</string>
     <string name="understood">Entendido</string>
     <string name="signin_success">Login correcto</string>
+    <string name="loading">Cargando...</string>
+    <string name="title_data_empty">No hay datos para mostrar</string>
+    <string name="sub_title_data_empty">Vuelva a intentarlo más tarde</string>
+    <string name="retry">Reintentar</string>
 
     <string name="error">Error</string>
     <string name="error_email">Email no válido</string>
@@ -68,5 +72,13 @@
     <string name="view_all">Ver todos</string>
 
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at fringilla elit. Etiam tristique venenatis tincidunt. In vitae molestie erat. Suspendisse lorem nulla, volutpat in feugiat in, ullamcorper vitae nisi. Cras hendrerit lectus porta elit.</string>
+    <string name="volver">Volver</string>
+    <string name="loading_restaurant_dishes">Cargando los platos del resturante...</string>
+    <string name="no_dishes_to_display">No hay platos para mostrar</string>
+    <string name="please_try_again_later">Vuelva a intentarlo más tarde</string>
+    <string name="no_data_to_display">No hay datos para mostrar</string>
+    <string name="loading_restaurant_details">Cargando detalles del restaurante</string>
+    <string name="loading_categories">Cargando categorías...</string>
+    <string name="there_are_no_categories_to_display">No hay categorías para mostrar.</string>
 
 </resources>

@@ -30,6 +30,7 @@ android {
             )
             buildConfigField("boolean", "LOG_ENABLED", "false")
             buildConfigField("String", "BASE_URL", "\"https://apiRelease.com/\"")
+            buildConfigField("boolean", "DESTRUCTIVE_MIGRATION_ENABLED", "false")
         }
         debug {
             isMinifyEnabled = false
@@ -39,6 +40,7 @@ android {
             )
             buildConfigField("boolean", "LOG_ENABLED", "true")
             buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/\"")
+            buildConfigField("boolean", "DESTRUCTIVE_MIGRATION_ENABLED", "true")
         }
     }
     compileOptions {

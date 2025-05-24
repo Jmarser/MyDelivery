@@ -30,4 +30,7 @@ interface RestaurantDao {
 
     @Query("SELECT * FROM ${Constants.TABLE_RESTAURANTS_FAVORITES} WHERE id = :id")
     suspend fun getById(id: String): RestaurantEntity?
+
+    @Query("SELECT * FROM ${Constants.TABLE_RESTAURANTS_FAVORITES} WHERE id = :id")
+    fun getByIdFlow(id: String): Flow<RestaurantEntity?>
 }
