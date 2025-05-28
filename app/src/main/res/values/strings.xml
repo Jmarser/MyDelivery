@@ -80,5 +80,6 @@
     <string name="loading_restaurant_details">Cargando detalles del restaurante</string>
     <string name="loading_categories">Cargando categorías...</string>
     <string name="there_are_no_categories_to_display">No hay categorías para mostrar.</string>
+    <string name="no_restaurant_to_display">No hay restaurantes para mostra</string>
 
 </resources>

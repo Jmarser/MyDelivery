@@ -72,6 +72,9 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.OnRestaurantSelected -> restaurantSelected(event.restaurant)
             HomeEvent.ClearSearchQuery -> clearSearchQuery()
             is HomeEvent.ToggleFavoriteRestaurant -> toggleFavoriteRestaurant(event.restaurant)
+            HomeEvent.OnNaviagteToBack -> onNavigateToBack()
+            HomeEvent.OnRetryGetCategory -> getAllCategories()
+            HomeEvent.OnRetryGetRestaurant -> getRestaurants()
         }
     }
 
@@ -216,6 +219,12 @@ class HomeViewModel @Inject constructor(
             _favoritesRestaurants.collect{
                 applyFilters()
             }
+        }
+    }
+
+    private fun onNavigateToBack(){
+        viewModelScope.launch {
+            _uiEffect.emit(HomeEffect.OnBackEffect)
         }
     }
 }

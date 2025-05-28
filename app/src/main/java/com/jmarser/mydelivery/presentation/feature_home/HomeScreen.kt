@@ -39,7 +39,8 @@ import kotlinx.coroutines.flow.collect
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    onNavigateToRestaurantDetails: (String) -> Unit
+    onNavigateToRestaurantDetails: (String) -> Unit,
+    onNavigateToBack: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -62,6 +63,10 @@ fun HomeScreen(
 
                 is HomeEffect.RestaurantSelected -> {
                     onNavigateToRestaurantDetails(effect.restaurant.id ?: "")
+                }
+
+                HomeEffect.OnBackEffect -> {
+                    onNavigateToBack()
                 }
             }
         }
@@ -96,11 +101,14 @@ fun HomeScreen(
                     message = stringResource(R.string.loading_categories)
                 )
             }
+
             CategoriesUiState.Empty -> {
                 ScreenEmpty(
                     title = stringResource(R.string.there_are_no_categories_to_display),
                     subTitle = stringResource(R.string.please_try_again_later),
-                    onNavigateToBack = {}
+                    onNavigateToBack = {
+                        onNavigateToBack()
+                    }
                 )
             }
 
@@ -108,8 +116,11 @@ fun HomeScreen(
                 ScreenFailure(
                     isNetwork = state.isNetworkError ?: false,
                     message = stringResource(state.errorCodeState.resourceId),
+                    loading = state is CategoriesUiState.Loading,
                     onRetry = {},
-                    onNavigateToBack = {}
+                    onNavigateToBack = {
+                        onNavigateToBack()
+                    }
                 )
             }
 
@@ -127,7 +138,9 @@ fun HomeScreen(
                     ScreenEmpty(
                         title = stringResource(R.string.there_are_no_categories_to_display),
                         subTitle = stringResource(R.string.please_try_again_later),
-                        onNavigateToBack = {}
+                        onNavigateToBack = {
+                            onNavigateToBack()
+                        }
                     )
                 }
             }
@@ -136,8 +149,11 @@ fun HomeScreen(
                 ScreenFailure(
                     isNetwork = false,
                     message = stringResource(ErrorCodeState.UNKNOWN_ERROR.resourceId),
+                    loading = state is CategoriesUiState.Loading,
                     onRetry = {},
-                    onNavigateToBack = {}
+                    onNavigateToBack = {
+                        onNavigateToBack()
+                    }
                 )
             }
         }
@@ -166,9 +182,38 @@ fun HomeScreen(
 
             }
 
-            is RestaurantsUiState.Failure -> Text(text = "Error desconocido")
-            RestaurantsUiState.Empty -> Text(text = "No hay restaurantes para mostrar")
-            else -> {}
+            is RestaurantsUiState.Failure -> {
+                ScreenFailure(
+                    isNetwork = false,
+                    message = stringResource(ErrorCodeState.UNKNOWN_ERROR.resourceId),
+                    loading = state is RestaurantsUiState.Loading,
+                    onRetry = {},
+                    onNavigateToBack = {
+                        onNavigateToBack()
+                    }
+                )
+            }
+
+            RestaurantsUiState.Empty ->{
+                ScreenEmpty(
+                    title = stringResource(R.string.no_restaurant_to_display),
+                    subTitle = stringResource(R.string.please_try_again_later),
+                    onNavigateToBack = {
+                        onNavigateToBack()
+                    }
+                )
+            }
+
+            else -> {
+                ScreenFailure(
+                    isNetwork = false,
+                    message = stringResource(ErrorCodeState.UNKNOWN_ERROR.resourceId),
+                    loading = state is RestaurantsUiState.Loading,
+                    onRetry = {},
+                    onNavigateToBack = {
+                        onNavigateToBack()
+                    }
+                )}
         }
     }
 }
@@ -178,6 +223,7 @@ fun HomeScreen(
 fun HomeScreenPreview() {
     HomeScreen(
         modifier = Modifier,
-        onNavigateToRestaurantDetails = {}
+        onNavigateToRestaurantDetails = {},
+        onNavigateToBack = {}
     )
 }

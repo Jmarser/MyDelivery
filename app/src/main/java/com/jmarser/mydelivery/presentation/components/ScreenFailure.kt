@@ -30,6 +30,7 @@ fun ScreenFailure(
     modifier: Modifier = Modifier,
     isNetwork: Boolean = false,
     message: String = stringResource(id = ErrorCodeState.UNKNOWN_ERROR.resourceId),
+    loading: Boolean = false,
     onRetry: () -> Unit,
     onNavigateToBack: () -> Unit
 ) {
@@ -81,6 +82,7 @@ fun ScreenFailure(
             ButtonWithIcon(
                 icon = AppIcons.ic_retry,
                 message = stringResource(id = R.string.retry),
+                loading = loading,
                 onClickAction = {onRetry()}
             )
         }
@@ -92,6 +94,7 @@ fun ScreenFailure(
 fun ScreenFailurePreview() {
     ScreenFailure(
         modifier = Modifier,
+        loading = true,
         onRetry = {},
         onNavigateToBack = {}
     )

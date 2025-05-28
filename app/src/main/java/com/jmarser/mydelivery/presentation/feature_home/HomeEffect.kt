@@ -14,4 +14,5 @@ sealed interface HomeEffect {
 
     data class CategorySelected(val category: CategoryDm): HomeEffect
     data class RestaurantSelected(val restaurant: RestaurantDm): HomeEffect
+    object OnBackEffect: HomeEffect
 }

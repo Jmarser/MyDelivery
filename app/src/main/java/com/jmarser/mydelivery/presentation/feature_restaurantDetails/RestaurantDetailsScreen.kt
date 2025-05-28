@@ -73,6 +73,7 @@ fun RestaurantDetailsScreen(
             ScreenFailure(
                 isNetwork = details.isNetwork ?: false,
                 message = stringResource(details.errorCodeState.resourceId),
+                loading = details is RestaurantDetailsUiState.Loading,
                 onRetry = {
                     viewModel.onEvent(RestaurantDetailsEvent.OnRetry)
                 },
@@ -175,6 +176,7 @@ fun RestaurantDetailsScreen(
                             ScreenFailure(
                                 isNetwork = dishes.isNetwork ?: false,
                                 message = stringResource(dishes.errorCodeState.resourceId),
+                                loading = dishes is DishesUiState.Loading,
                                 onRetry = {
                                     viewModel.onEvent(RestaurantDetailsEvent.OnRetry)
                                 },
@@ -211,6 +213,7 @@ fun RestaurantDetailsScreen(
                             ScreenFailure(
                                 isNetwork = false,
                                 message = stringResource(ErrorCodeState.UNKNOWN_ERROR.resourceId),
+                                loading = dishes is DishesUiState.Loading,
                                 onRetry = {
                                     viewModel.onEvent(RestaurantDetailsEvent.OnRetry)
                                 },
@@ -228,6 +231,7 @@ fun RestaurantDetailsScreen(
             ScreenFailure(
                 isNetwork = false,
                 message = stringResource(ErrorCodeState.UNKNOWN_ERROR.resourceId),
+                loading = details is RestaurantDetailsUiState.Loading,
                 onRetry = {
                     viewModel.onEvent(RestaurantDetailsEvent.OnRetry)
                 },

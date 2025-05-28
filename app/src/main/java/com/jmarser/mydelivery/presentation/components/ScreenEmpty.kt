@@ -40,7 +40,7 @@ fun ScreenEmpty(
     ){
         Icon(
             modifier = Modifier
-                .size(64.dp),
+                .size(MyDimens.dimens.iconSizeExtraLarge),
             imageVector = AppIcons.ic_empty,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface.copy(alpha = .5f)
