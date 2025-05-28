@@ -97,6 +97,9 @@ fun AppNavHost(
             HomeScreen(
                 onNavigateToRestaurantDetails = { restaurantId ->
                     navController.navigate(AppRoutes.RestaurantDetails(restaurantId))
+                },
+                onNavigateToBack = {
+                    navController.navigateToBack()
                 }
             )
         }
