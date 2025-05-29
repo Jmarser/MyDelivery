@@ -2,6 +2,7 @@ package com.jmarser.mydelivery.data.remote.network
 
 import com.jmarser.mydelivery.data.modelsDto.AuthResponse
 import com.jmarser.mydelivery.data.modelsDto.CategoryResponse
+import com.jmarser.mydelivery.data.modelsDto.DishDetailsResponse
 import com.jmarser.mydelivery.data.modelsDto.DishesResponse
 import com.jmarser.mydelivery.data.modelsDto.RestaurantDetailsResponse
 import com.jmarser.mydelivery.data.modelsDto.RestaurantsResponse
@@ -51,4 +52,6 @@ interface ApiService {
     @GET("restaurants/{id}/menu")
     suspend fun getDishesByRestaurant(@Path("id") restaurantId: String): Response<DishesResponse>
 
+    @GET("menu/{itemId}")
+    suspend fun getDishById(@Path("itemId") dishId: String): Response<DishDetailsResponse>
 }

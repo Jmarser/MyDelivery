@@ -26,4 +26,7 @@ sealed class AppRoutes() {
     @Serializable
     data class RestaurantDetails(val restaurantId: String)
 
+    @Serializable
+    data class DishDetails(val dishId: String)
+
 }

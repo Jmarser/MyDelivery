@@ -13,6 +13,7 @@ import com.jmarser.mydelivery.presentation.Greeting
 import com.jmarser.mydelivery.presentation.feature_auth.sign_in.SignInScreen
 import com.jmarser.mydelivery.presentation.feature_auth.sign_up.SignUpScreen
 import com.jmarser.mydelivery.presentation.feature_auth.welcome.WelcomeScreen
+import com.jmarser.mydelivery.presentation.feature_dishDetails.DishDetailsScreen
 import com.jmarser.mydelivery.presentation.feature_home.HomeScreen
 import com.jmarser.mydelivery.presentation.feature_restaurantDetails.RestaurantDetailsScreen
 
@@ -108,6 +109,19 @@ fun AppNavHost(
             val args = it.toRoute<AppRoutes.RestaurantDetails>()
             RestaurantDetailsScreen(
                 restaurantId = args.restaurantId,
+                onNavigateToBack = {
+                    navController.navigateToBack()
+                },
+                onNavigateToDishDetails = {dishId ->
+                    navController.navigate(AppRoutes.DishDetails(dishId = dishId))
+                }
+            )
+        }
+
+        composable<AppRoutes.DishDetails> {
+            val args = it.toRoute<AppRoutes.DishDetails>()
+            DishDetailsScreen(
+                dishId = args.dishId,
                 onNavigateToBack = {
                     navController.navigateToBack()
                 }

@@ -28,9 +28,9 @@ import com.jmarser.mydelivery.ui.theme.MyDimens
 @Composable
 fun HeaderScreenDetails(
     modifier: Modifier = Modifier,
-    restaurant: RestaurantDm,
+    headerItem: HeaderItem,
     onNavigateToBack: () -> Unit,
-    onFavoriteToggle: (RestaurantDm) -> Unit
+    onFavoriteToggle: (HeaderItem) -> Unit
 ) {
 
     Box (
@@ -42,8 +42,8 @@ fun HeaderScreenDetails(
                 .fillMaxWidth()
                 .padding(MyDimens.dimens.paddingNormal)
                 .clip(MaterialTheme.shapes.medium),
-            model = restaurant.imageUrl,
-            contentDescription = restaurant.name,
+            model = headerItem.imageUrl,
+            contentDescription = headerItem.name,
             contentScale = ContentScale.FillWidth,
             placeholder = painterResource(id = R.drawable.background),
             error = painterResource(id = R.drawable.ic_image_not_found)
@@ -76,19 +76,19 @@ fun HeaderScreenDetails(
                     shape = CircleShape
                 ),
             onClick = {
-                onFavoriteToggle(restaurant)
+                onFavoriteToggle(headerItem)
             }
         ) {
             Icon(
-                imageVector = if (restaurant.isFavorite) AppIcons.ic_yes_favorite else AppIcons.ic_not_favorite,
+                imageVector = if (headerItem.isFavorite) AppIcons.ic_yes_favorite else AppIcons.ic_not_favorite,
                 contentDescription = "favorito",
-                tint = if (restaurant.isFavorite) Color.Red else Color.Black
+                tint = if (headerItem.isFavorite) Color.Red else Color.Black
             )
         }
     }
 }
 
-@Preview(showBackground = false)
+/*@Preview(showBackground = false)
 @Composable
 fun HeaderScreenDetailsPreview() {
     HeaderScreenDetails(
@@ -104,4 +104,4 @@ fun HeaderScreenDetailsPreview() {
         onNavigateToBack = {},
         onFavoriteToggle = {}
     )
-}
+}*/

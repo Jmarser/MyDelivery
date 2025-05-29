@@ -11,7 +11,10 @@ import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.WifiOff
+import androidx.compose.material.icons.rounded.AddCircle
+import androidx.compose.material.icons.rounded.AddShoppingCart
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.RemoveCircle
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
@@ -66,4 +69,10 @@ object AppIcons {
     val ic_error_server: ImageVector = Icons.Default.CloudOff
 
     val ic_retry: ImageVector = Icons.Default.Replay
+
+    val ic_add: ImageVector = Icons.Rounded.AddCircle
+
+    val ic_minus: ImageVector = Icons.Rounded.RemoveCircle
+
+    val ic_cart: ImageVector = Icons.Rounded.AddShoppingCart
 }

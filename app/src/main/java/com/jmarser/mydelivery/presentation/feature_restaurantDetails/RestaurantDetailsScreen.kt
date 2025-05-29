@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jmarser.mydelivery.R
 import com.jmarser.mydelivery.core.ErrorCodeState
+import com.jmarser.mydelivery.presentation.components.HeaderItem
 import com.jmarser.mydelivery.presentation.components.HeaderScreenDetails
 import com.jmarser.mydelivery.presentation.components.ScreenEmpty
 import com.jmarser.mydelivery.presentation.components.ScreenFailure
@@ -37,7 +38,8 @@ fun RestaurantDetailsScreen(
     modifier: Modifier = Modifier,
     restaurantId: String,
     viewModel: RestaurantDetailsViewModel = hiltViewModel(),
-    onNavigateToBack: () -> Unit
+    onNavigateToBack: () -> Unit,
+    onNavigateToDishDetails: (String) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -45,12 +47,13 @@ fun RestaurantDetailsScreen(
     val dishesState by viewModel.dishesUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.uiEffect.collect{effect ->
-            when(effect){
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
                 RestaurantDetailsEffect.NavigateToBack -> onNavigateToBack()
                 is RestaurantDetailsEffect.NavigateToDishDetails -> {
-                    Toast.makeText(context, "Seleccionado el plato: ${effect.dish.name}", Toast.LENGTH_SHORT).show()
+                    onNavigateToDishDetails(effect.dish.id ?: "")
                 }
+
                 is RestaurantDetailsEffect.ShowToast -> {
                     Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
                 }
@@ -59,7 +62,7 @@ fun RestaurantDetailsScreen(
     }
 
 
-    when(val details = uiState){
+    when (val details = uiState) {
         RestaurantDetailsUiState.Empty -> {
             ScreenEmpty(
                 title = stringResource(R.string.no_data_to_display),
@@ -69,6 +72,7 @@ fun RestaurantDetailsScreen(
                 }
             )
         }
+
         is RestaurantDetailsUiState.Failure -> {
             ScreenFailure(
                 isNetwork = details.isNetwork ?: false,
@@ -82,9 +86,11 @@ fun RestaurantDetailsScreen(
                 }
             )
         }
+
         RestaurantDetailsUiState.Loading -> {
             ScreenLoading(message = stringResource(R.string.loading_restaurant_details))
         }
+
         is RestaurantDetailsUiState.Success -> {
 
             LazyVerticalGrid(
@@ -95,38 +101,50 @@ fun RestaurantDetailsScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                item (
+                item(
                     span = {
                         GridItemSpan(2)
                     }
-                ){
+                ) {
                     HeaderScreenDetails(
-                        restaurant = details.data,
+                        headerItem = HeaderItem.Restaurant(details.data),
                         onNavigateToBack = {
                             viewModel.onEvent(RestaurantDetailsEvent.onNavigateToBack)
                         },
                         onFavoriteToggle = {
-                            viewModel.onEvent(RestaurantDetailsEvent.ToggleFavoriteRestaurant(it))
+                            when (it) {
+                                is HeaderItem.Dish -> {
+                                    // No hacemos nada por no tener plato
+                                }
+                                is HeaderItem.Restaurant -> {
+                                    viewModel.onEvent(
+                                        RestaurantDetailsEvent.ToggleFavoriteRestaurant(
+                                            it.data
+                                        )
+                                    )
+
+                                }
+                            }
                         }
                     )
                 }
 
-                item (
+                item(
                     span = {
                         GridItemSpan(2)
                     }
-                ){
+                ) {
                     TitleScreenDetails(
-                        restaurant = details.data,
+                        headerItem = HeaderItem.Restaurant(details.data),
                         onNavigateToReviews = {}
                     )
                 }
 
-                item (
+                item(
                     span = {
                         GridItemSpan(2)
                     }
-                ){
+                ) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -137,26 +155,27 @@ fun RestaurantDetailsScreen(
                 }
 
                 // Sección para mostrar el estado del listado de platos
-                when(val dishes = dishesState){
+                when (val dishes = dishesState) {
                     DishesUiState.Loading -> {
-                        item (
+                        item(
                             span = {
                                 GridItemSpan(2)
                             }
-                        ){
+                        ) {
                             ScreenLoading(
                                 message = stringResource(R.string.loading_restaurant_dishes)
                             )
 
                         }
                     }
+
                     DishesUiState.Empty -> {
 
-                        item (
+                        item(
                             span = {
                                 GridItemSpan(2)
                             }
-                        ){
+                        ) {
                             ScreenEmpty(
                                 title = stringResource(R.string.no_dishes_to_display),
                                 subTitle = stringResource(R.string.please_try_again_later),
@@ -166,12 +185,13 @@ fun RestaurantDetailsScreen(
                             )
                         }
                     }
+
                     is DishesUiState.Failure -> {
-                        item (
+                        item(
                             span = {
                                 GridItemSpan(2)
                             }
-                        ){
+                        ) {
 
                             ScreenFailure(
                                 isNetwork = dishes.isNetwork ?: false,
@@ -188,28 +208,34 @@ fun RestaurantDetailsScreen(
                         }
 
                     }
+
                     is DishesUiState.Success -> {
 
                         val dis = dishes.data.data.orEmpty().filterNotNull()
 
-                        items(dis){dish ->
+                        items(dis) { dish ->
                             DishesItem(
                                 dish = dish,
                                 onDishSelected = {
                                     viewModel.onEvent(RestaurantDetailsEvent.OnDishSelected(it))
                                 },
                                 onToggleFavoriteDish = {
-                                    viewModel.onEvent(RestaurantDetailsEvent.ToggleFavoritesDishes(it))
+                                    viewModel.onEvent(
+                                        RestaurantDetailsEvent.ToggleFavoritesDishes(
+                                            it
+                                        )
+                                    )
                                 }
                             )
                         }
                     }
+
                     else -> {
-                        item (
+                        item(
                             span = {
                                 GridItemSpan(2)
                             }
-                        ){
+                        ) {
                             ScreenFailure(
                                 isNetwork = false,
                                 message = stringResource(ErrorCodeState.UNKNOWN_ERROR.resourceId),
@@ -249,6 +275,7 @@ fun RestaurantDetailsScreenPreview() {
     RestaurantDetailsScreen(
         modifier = Modifier,
         restaurantId = "",
-        onNavigateToBack = {}
+        onNavigateToBack = {},
+        onNavigateToDishDetails = {}
     )
 }

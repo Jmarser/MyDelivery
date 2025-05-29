@@ -81,5 +81,7 @@
     <string name="loading_categories">Cargando categorías...</string>
     <string name="there_are_no_categories_to_display">No hay categorías para mostrar.</string>
     <string name="no_restaurant_to_display">No hay restaurantes para mostra</string>
+    <string name="loading_dish_details">Cargando detalles del plato...</string>
+    <string name="add_to_cart">Añadir al carrito</string>
 
 </resources>

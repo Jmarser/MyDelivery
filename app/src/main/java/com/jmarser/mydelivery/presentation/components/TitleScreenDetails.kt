@@ -23,7 +23,7 @@ import com.jmarser.mydelivery.ui.theme.Orange_enabled
 @Composable
 fun TitleScreenDetails(
     modifier: Modifier = Modifier,
-    restaurant: RestaurantDm,
+    headerItem: HeaderItem,
     onNavigateToReviews: () -> Unit
 ) {
     Column (
@@ -35,7 +35,7 @@ fun TitleScreenDetails(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = MyDimens.dimens.paddingMedium, vertical = MyDimens.dimens.paddingNormal),
-            text = restaurant.name ?: "Sin nombre",
+            text = headerItem.name ?: "Sin nombre",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.ExtraBold
         )
@@ -82,7 +82,7 @@ fun TitleScreenDetails(
     }
 }
 
-@Preview(showBackground = false)
+/*@Preview(showBackground = false)
 @Composable
 fun TitleScreenDetailsPreview() {
     TitleScreenDetails(
@@ -97,4 +97,4 @@ fun TitleScreenDetailsPreview() {
             distance = 0.0),
         onNavigateToReviews = {}
     )
-}
+}*/
